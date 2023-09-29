@@ -52,13 +52,13 @@ const draw = SVG().addTo('body')
 const last = {}
 
 // box hint
-document.addEventListener("mouseover", event => {
+document.addEventListener("pointerover", event => {
   const target = event.target
-  const { top, left } = target.getBoundingClientRect()
-  const radious = Math.min(target.clientWidth, target.clientHeight) < 40 ? 5 : 10
+  const { top, left, width, height } = target.getBoundingClientRect()
+  const radious = Math.min(width, height) < 40 ? 5 : 10
   const offsetTowardsOutside = 5
   const rect = draw
-    .rect(target.clientWidth + 2 * offsetTowardsOutside, target.clientHeight + 2 * offsetTowardsOutside)
+    .rect(width + 2 * offsetTowardsOutside, height + 2 * offsetTowardsOutside)
     .radius(radious)
     .move(left - offsetTowardsOutside, top - offsetTowardsOutside)
     .stroke({ width: 5, color: '#f06' })
@@ -68,9 +68,26 @@ document.addEventListener("mouseover", event => {
   last.rect = rect
 })
 
-document.addEventListener("mouseout", event => {
+document.addEventListener("pointerout", event => {
   const target = event.target
   if (target === last.target) {
     last.rect.remove()
+  }
+})
+
+document.addEventListener("pointerdown", event => {
+  event.stopImmediatePropagation()
+  event.preventDefault()
+  const target = event.target
+  if (target === last.target) {
+    const { top, left } = target.getBoundingClientRect()
+    const radious = Math.min(target.clientWidth, target.clientHeight) < 40 ? 5 : 10
+    const offsetTowardsOutside = 5
+    draw
+      .rect(target.clientWidth + 2 * offsetTowardsOutside, target.clientHeight + 2 * offsetTowardsOutside)
+      .radius(radious)
+      .move(left - offsetTowardsOutside, top - offsetTowardsOutside)
+      .stroke({ width: 5, color: '#f06' })
+      .fill('none')
   }
 })
