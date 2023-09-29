@@ -44,5 +44,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 import { SVG } from '@svgdotjs/svg.js'
 
-const draw = SVG().addTo('body').size(300, 300)
-draw.rect(100, 100).attr({ fill: '#f06' })
+// setup
+const page = document.documentElement
+const draw = SVG().addTo('body')
+  .size(page.scrollWidth, page.scrollHeight)
+  .css({ position: 'fixed', top: 0, 'pointer-events': 'none' })
+const last = {}
+
+// box hint
+document.addEventListener("mouseover", event => {
+  const target = event.target
+  const { top, left } = target.getBoundingClientRect()
+  const rect = draw.rect(target.clientWidth, target.clientHeight).move(left, top).stroke('#f06').fill('none')
+  last.target = target
+  last.rect = rect
+})
+
+document.addEventListener("mouseout", event => {
+  const target = event.target
+  if (target === last.target) {
+    last.rect.remove()
+  }
+})
