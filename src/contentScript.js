@@ -56,10 +56,11 @@ document.addEventListener("mouseover", event => {
   const target = event.target
   const { top, left } = target.getBoundingClientRect()
   const radious = Math.min(target.clientWidth, target.clientHeight) < 40 ? 5 : 10
+  const offsetTowardsOutside = 5
   const rect = draw
-    .rect(target.clientWidth, target.clientHeight)
+    .rect(target.clientWidth + 2 * offsetTowardsOutside, target.clientHeight + 2 * offsetTowardsOutside)
     .radius(radious)
-    .move(left, top)
+    .move(left - offsetTowardsOutside, top - offsetTowardsOutside)
     .stroke({ width: 5, color: '#f06' })
     .opacity(0.5)
     .fill('none')
