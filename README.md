@@ -16,8 +16,8 @@ first-class DOM annotator. Simple, quick and elegant UX. Just like a bunny.
   - layers
 
 features:
-- create graphic on page
-- create hint when moving cursor
+- refine default box style
+- create when click (should stick on it)
 - arrow mode
 - mode switching
 - text mode
