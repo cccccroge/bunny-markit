@@ -20,5 +20,8 @@
     "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
     "webpack-merge": "^5.9.0"
+  },
+  "dependencies": {
+    "@svgdotjs/svg.js": "^3.2.0"
   }
 }
