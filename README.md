@@ -1,4 +1,4 @@
-# Bunny Tag
+# Bunny Markit
 first-class DOM annotator. Simple, quick and elegant UX. Just like a bunny.
 
 # plan
