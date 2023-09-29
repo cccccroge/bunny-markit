@@ -48,14 +48,21 @@ import { SVG } from '@svgdotjs/svg.js'
 const page = document.documentElement
 const draw = SVG().addTo('body')
   .size(page.scrollWidth, page.scrollHeight)
-  .css({ position: 'fixed', top: 0, 'pointer-events': 'none' })
+  .css({ position: 'fixed', top: 0, 'pointer-events': 'none', 'z-index': 1000000 })
 const last = {}
 
 // box hint
 document.addEventListener("mouseover", event => {
   const target = event.target
   const { top, left } = target.getBoundingClientRect()
-  const rect = draw.rect(target.clientWidth, target.clientHeight).move(left, top).stroke('#f06').fill('none')
+  const radious = Math.min(target.clientWidth, target.clientHeight) < 40 ? 5 : 10
+  const rect = draw
+    .rect(target.clientWidth, target.clientHeight)
+    .radius(radious)
+    .move(left, top)
+    .stroke({ width: 5, color: '#f06' })
+    .opacity(0.5)
+    .fill('none')
   last.target = target
   last.rect = rect
 })
