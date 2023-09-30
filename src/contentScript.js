@@ -2,6 +2,7 @@
 
 import { SVG } from '@svgdotjs/svg.js'
 import BoxDrawer from './drawers/boxDrawer';
+import { debounce } from 'lodash';
 
 // setup
 const page = document.documentElement
@@ -15,10 +16,13 @@ const boxDrawer = new BoxDrawer(draw, {
   offsetTowardsOutside: 5,
 })
 
-document.addEventListener("pointerover", event => {
+const onPointerOver = (event) => {
   const target = event.target
   boxDrawer.drawHint(target)
-})
+}
+const debouncedOnPointerOver = debounce(onPointerOver, 100)
+
+document.addEventListener("pointerover", debouncedOnPointerOver)
 
 document.addEventListener("pointerout", event => {
   const target = event.target
