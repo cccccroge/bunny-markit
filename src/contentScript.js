@@ -54,23 +54,12 @@ const last = {}
 // box hint
 document.addEventListener("pointerover", event => {
   const target = event.target
-  const { top, left, width, height } = target.getBoundingClientRect()
-  const radious = Math.min(width, height) < 40 ? 5 : 10
-  const offsetTowardsOutside = 5
-  const rect = draw
-    .rect(width + 2 * offsetTowardsOutside, height + 2 * offsetTowardsOutside)
-    .radius(radious)
-    .move(left - offsetTowardsOutside, top - offsetTowardsOutside)
-    .stroke({ width: 5, color: '#f06' })
-    .opacity(0.5)
-    .fill('none')
-  last.target = target
-  last.rect = rect
+  drawBox(target, { isHint: true })
 })
 
 document.addEventListener("pointerout", event => {
   const target = event.target
-  if (target === last.target) {
+  if (target === last.element) {
     last.rect.remove()
   }
 })
@@ -79,15 +68,29 @@ document.addEventListener("pointerdown", event => {
   event.stopImmediatePropagation()
   event.preventDefault()
   const target = event.target
-  if (target === last.target) {
-    const { top, left } = target.getBoundingClientRect()
-    const radious = Math.min(target.clientWidth, target.clientHeight) < 40 ? 5 : 10
-    const offsetTowardsOutside = 5
-    draw
-      .rect(target.clientWidth + 2 * offsetTowardsOutside, target.clientHeight + 2 * offsetTowardsOutside)
-      .radius(radious)
-      .move(left - offsetTowardsOutside, top - offsetTowardsOutside)
-      .stroke({ width: 5, color: '#f06' })
-      .fill('none')
+  if (target === last.element) {
+    drawBox(target, { isHint: false })
   }
 })
+
+function drawBox(element, options) {
+  const { isHint } = options
+
+  const { top, left, width, height } = element.getBoundingClientRect()
+  const radious = Math.min(width, height) < 40 ? 5 : 10
+  const offsetTowardsOutside = 5
+
+  const rect = draw
+    .rect(width + 2 * offsetTowardsOutside, height + 2 * offsetTowardsOutside)
+    .radius(radious)
+    .move(left - offsetTowardsOutside, top - offsetTowardsOutside)
+    .stroke({ width: 5, color: '#f06' })
+    .fill('none')
+
+  if (isHint) {
+    rect.opacity(0.5)
+
+    last.element = element
+    last.rect = rect
+  }
+}
