@@ -1,76 +1,37 @@
 'use strict';
 
-// Content script file will run in the context of web page.
-// With content script you can manipulate the web pages using
-// Document Object Model (DOM).
-// You can also pass information to the parent extension.
-
-// We execute this script by making an entry in manifest.json file
-// under `content_scripts` property
-
-// For more information on Content Scripts,
-// See https://developer.chrome.com/extensions/content_scripts
-
-// Log `title` of current active web page
-const pageTitle = document.head.getElementsByTagName('title')[0].innerHTML;
-console.log(
-  `Page title is: '${pageTitle}' - evaluated by Chrome extension's 'contentScript.js' file`
-);
-
-// Communicate with background file by sending a message
-chrome.runtime.sendMessage(
-  {
-    type: 'GREETINGS',
-    payload: {
-      message: 'Hello, my name is Con. I am from ContentScript.',
-    },
-  },
-  (response) => {
-    console.log(response.message);
-  }
-);
-
-// Listen for message
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.type === 'COUNT') {
-    console.log(`Current count is ${request.payload.count}`);
-  }
-
-  // Send an empty response
-  // See https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-531531890
-  sendResponse({});
-  return true;
-});
-
 import { SVG } from '@svgdotjs/svg.js'
+import BoxDrawer from './drawers/boxDrawer';
+import { debounce } from 'lodash';
 
 // setup
 const page = document.documentElement
 const draw = SVG().addTo('body')
   .size(page.scrollWidth, page.scrollHeight)
   .css({ position: 'fixed', top: 0, 'pointer-events': 'none', 'z-index': 1000000 })
-const last = {}
-
-// box hint
-document.addEventListener("mouseover", event => {
-  const target = event.target
-  const { top, left } = target.getBoundingClientRect()
-  const radious = Math.min(target.clientWidth, target.clientHeight) < 40 ? 5 : 10
-  const offsetTowardsOutside = 5
-  const rect = draw
-    .rect(target.clientWidth + 2 * offsetTowardsOutside, target.clientHeight + 2 * offsetTowardsOutside)
-    .radius(radious)
-    .move(left - offsetTowardsOutside, top - offsetTowardsOutside)
-    .stroke({ width: 5, color: '#f06' })
-    .opacity(0.5)
-    .fill('none')
-  last.target = target
-  last.rect = rect
+const boxDrawer = new BoxDrawer(draw, {
+  radiusThreshold: 40,
+  radiusLarge: 10,
+  radiusSmall: 5,
+  offsetTowardsOutside: 5,
 })
 
-document.addEventListener("mouseout", event => {
+const onPointerOver = (event) => {
   const target = event.target
-  if (target === last.target) {
-    last.rect.remove()
-  }
+  boxDrawer.drawHint(target)
+}
+const debouncedOnPointerOver = debounce(onPointerOver, 100)
+
+document.addEventListener("pointerover", debouncedOnPointerOver)
+
+document.addEventListener("pointerout", event => {
+  const target = event.target
+  boxDrawer.erase(target)
+})
+
+document.addEventListener("pointerdown", event => {
+  event.stopImmediatePropagation()
+  event.preventDefault()
+  const target = event.target
+  boxDrawer.drawMark(target)
 })
