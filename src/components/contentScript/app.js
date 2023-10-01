@@ -5,7 +5,9 @@ import { enableBox, disableBox } from './tools/box'
 import { enableText, disableText } from './tools/text'
 import BoxDrawer from './drawers/boxDrawer'
 import TextDrawer from './drawers/textDrawer'
-import '@webcomponents/custom-elements' // polyfill: web components just doesn't work in content script
+import '@webcomponents/webcomponentsjs' // polyfill: web components just doesn't work in content script
+import '@shoelace-style/shoelace/dist/themes/light.css';
+import '@shoelace-style/shoelace/dist/components/button/button.js'
 import './toolbox';
 import { showToolBox } from './toolbox';
 
