@@ -5,6 +5,9 @@ import { enableBox, disableBox } from './tools/box'
 import { enableText, disableText } from './tools/text'
 import BoxDrawer from './drawers/boxDrawer'
 import TextDrawer from './drawers/textDrawer'
+import '@webcomponents/custom-elements' // polyfill: web components just doesn't work in content script
+import './toolbox';
+import { showToolBox } from './toolbox';
 
 // setup
 const page = document.documentElement
@@ -31,6 +34,7 @@ chrome.runtime.onMessage.addListener(
       sendReponse('OK')
       // enableBox()
       enableText()
+      showToolBox()
 
       sessionStorage.setItem('bunny/activated', 'true');
     } else if (request === 'ASK_IS_ACTIVATED') {

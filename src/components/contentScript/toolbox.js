@@ -1,25 +1,28 @@
 import { LitElement, html, css } from "lit";
-import { customElement, state } from "lit/decorators";
+import { customElement, state } from "lit/decorators.js";
 import { 
   fastButton,
-  fastToolbar, 
+  // fastToolbar, 
   provideFASTDesignSystem 
 } from "@microsoft/fast-components";
 
-provideFASTDesignSystem()
-  .register(
-    fastButton(),
-    fastToolbar(),
-  )
+// provideFASTDesignSystem()
+//   .register(
+//     fastButton(),
+//   )
 
 @customElement('tool-box')
 export class ToolBox extends LitElement {
   render() {
     return html`
-      <fast-toolbar>
-        <fast-button>Box</fast-button>
-        <fast-button>Text</fast-button>
-      </fast-toolbar>
+      <!-- <fast-toolbar> -->
+        <div>hello</div>
+      <!-- </fast-toolbar> -->
     `;
   }
+}
+
+export function showToolBox() {
+  const element = document.createElement('tool-box')
+  document.body.appendChild(element)
 }
