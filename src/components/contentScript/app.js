@@ -5,9 +5,12 @@ import { enableBox, disableBox } from './tools/box'
 import { enableText, disableText } from './tools/text'
 import BoxDrawer from './drawers/boxDrawer'
 import TextDrawer from './drawers/textDrawer'
+
 import '@webcomponents/webcomponentsjs' // polyfill: web components just doesn't work in content script
 import '@shoelace-style/shoelace/dist/themes/light.css';
-import '@shoelace-style/shoelace/dist/components/button/button.js'
+import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
+setBasePath(chrome.runtime.getURL('shoelace'));
+
 import './toolbox';
 import { showToolBox } from './toolbox';
 
