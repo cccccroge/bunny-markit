@@ -1,35 +1,31 @@
 import { LitElement, html, css } from 'lit';
-import { customElement } from 'lit/decorator.js';
+import { customElement, property } from 'lit/decorators.js';
+import { 
+  fastButton, 
+  provideFASTDesignSystem 
+} from "@microsoft/fast-components";
+
+provideFASTDesignSystem()
+  .register(
+    fastButton()
+  );
 
 @customElement('popup-app')
 export class PopupApp extends LitElement {
+  @property({ type: Boolean })
+  clicked = false;
+
   static styles = css`
-    /* normalize css starts here */
-    *,
-    *::before,
-    *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    /* normalize css ends here */
-
-    html {
-      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
-        sans-serif;
-      color: #222;
-      width: 350px;
-      height: 100px;
-    }
-
-    h1.title {
-      margin-bottom: 10px;
+    h1 {
+      color: red;
     }
   `;
 
   render() {
     return html`
-      <h1 class="title">Bunny Markit</h1>
+      <h1>Bunny Markitt</h1>
+      <p>hello! ${this.name}</p>
+      <fast-button>Hello world</fast-button>
     `
   };
 }
