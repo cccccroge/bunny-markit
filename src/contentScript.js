@@ -1,37 +1,43 @@
 'use strict';
 
 import { SVG } from '@svgdotjs/svg.js'
-import BoxDrawer from './drawers/boxDrawer';
-import { debounce } from 'lodash';
+import { disableBox, enableBox } from './tools/box'
+import BoxDrawer from './drawers/boxDrawer'
 
 // setup
 const page = document.documentElement
 const draw = SVG().addTo('body')
   .size(page.scrollWidth, page.scrollHeight)
   .css({ position: 'fixed', top: 0, 'pointer-events': 'none', 'z-index': 1000000 })
-const boxDrawer = new BoxDrawer(draw, {
+
+window.boxDrawer = new BoxDrawer(draw, {
   radiusThreshold: 40,
   radiusLarge: 10,
   radiusSmall: 5,
   offsetTowardsOutside: 5,
 })
 
-const onPointerOver = (event) => {
-  const target = event.target
-  boxDrawer.drawHint(target)
-}
-const debouncedOnPointerOver = debounce(onPointerOver, 100)
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendReponse) {
+    if (request === 'ACTIVATE') {
+      sendReponse('OK')
+      enableBox()
+      sessionStorage.setItem('bunny/activated', 'true');
+    } else if (request === 'ASK_IS_ACTIVATED') {
+      const activated = sessionStorage.getItem('bunny/activated');
+      sendReponse(activated)
+    } else if (request === 'TAKE_SCREENSHOT') {
+      // TODO: take screen shot
+      console.log('take a screenshot!')
+      sessionStorage.clear()
+      disableBox()
+      sendReponse('OK')
+    }
+  }
+)
 
-document.addEventListener("pointerover", debouncedOnPointerOver)
-
-document.addEventListener("pointerout", event => {
-  const target = event.target
-  boxDrawer.erase(target)
-})
-
-document.addEventListener("pointerdown", event => {
-  event.stopImmediatePropagation()
-  event.preventDefault()
-  const target = event.target
-  boxDrawer.drawMark(target)
-})
+// changing document will clean up current drawing context
+window.addEventListener("beforeunload", (event) => {
+  sessionStorage.clear()
+  disableBox()
+});

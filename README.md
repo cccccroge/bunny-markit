@@ -16,11 +16,11 @@ first-class DOM annotator. Simple, quick and elegant UX. Just like a bunny.
   - layers
 
 features:
-- refine default box style
-- create when click (should stick on it)
-- arrow mode
 - mode switching
-- text mode
+  - enable drawing mode in popup
+  - freeze interaction when enter drawing modes
+  - change to text mode
+- arrow mode
 ## Install
 
 [**Chrome** extension]() <!-- TODO: Add chrome extension link inside parenthesis -->
