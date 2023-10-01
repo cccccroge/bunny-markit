@@ -22,7 +22,9 @@
     "webpack-merge": "^5.9.0"
   },
   "dependencies": {
+    "@microsoft/fast-components": "^2.30.6",
     "@svgdotjs/svg.js": "^3.2.0",
+    "lit": "^2.8.0",
     "lodash": "^4.17.21"
   }
 }
