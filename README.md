@@ -17,9 +17,10 @@ first-class DOM annotator. Simple, quick and elegant UX. Just like a bunny.
 
 features:
 - mode switching
-  - enable drawing mode in popup
-  - freeze interaction when enter drawing modes
-  - change to text mode
+  - a toolbox UI that can change mode
+  - screenshot function
+  - freeze interaction when enter drawing modes (draw area could be fixed?)
+  
 - arrow mode
 ## Install
 

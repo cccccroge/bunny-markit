@@ -1,14 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { 
-  fastButton, 
-  provideFASTDesignSystem 
-} from "@microsoft/fast-components";
-
-provideFASTDesignSystem()
-  .register(
-    fastButton()
-  );
+import '@shoelace-style/shoelace/dist/themes/light.css';
+import '@shoelace-style/shoelace/dist/components/button/button.js'
 
 @customElement('popup-app')
 export class PopupApp extends LitElement {
@@ -32,11 +25,11 @@ export class PopupApp extends LitElement {
   getButton() {
     if (this._activated === 'true') {
       return html`
-        <fast-button @click="${this._onTakeScreenShot}">Take Screenshot</fast-button>
+        <sl-button @click="${this._onTakeScreenShot}">Take Screenshot</sl-button>
       `
     } else {
       return html`
-        <fast-button @click="${this._onStartDrawing}">Start Drawing</fast-button>
+        <sl-button @click="${this._onStartDrawing}">Start Drawing</sl-button>
       `
     }
   }

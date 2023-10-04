@@ -4,6 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const PATHS = require('./paths');
+const path = require('path');
 
 // used in the module rules and in the stats exlude list
 const IMAGE_TYPES = /\.(png|jpe?g|gif|svg)$/i;
@@ -76,6 +77,10 @@ const common = {
           from: '**/*',
           context: 'public',
         },
+        {
+          from: path.resolve(__dirname, '../node_modules/@shoelace-style/shoelace/dist/assets'),
+          to: path.resolve(__dirname, '../build/shoelace/assets')
+        }
       ],
     }),
     // Extract CSS into separate files

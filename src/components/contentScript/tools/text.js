@@ -17,6 +17,12 @@ export const disableText = () => {
 const onPointerOver = (event) => {
   window.textDrawer.eraseLast()
 
+  // ignore if over on toolboxs
+  const toolbox = document.querySelector('tool-box')
+  if (toolbox && toolbox.contains(event.target)) {
+    return
+  }
+
   const { clientX, clientY } = event
   window.textDrawer.drawHint({ x: clientX, y: clientY })
 }
