@@ -1,8 +1,6 @@
 'use strict';
 
 import { SVG } from '@svgdotjs/svg.js'
-import { enableBox, disableBox } from './tools/box'
-import { enableText, disableText } from './tools/text'
 import BoxDrawer from './drawers/boxDrawer'
 import TextDrawer from './drawers/textDrawer'
 
@@ -37,8 +35,6 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendReponse) {
     if (request === 'ACTIVATE') {
       sendReponse('OK')
-      // enableBox()
-      enableText()
       showToolBox()
 
       sessionStorage.setItem('bunny/activated', 'true');
@@ -49,8 +45,6 @@ chrome.runtime.onMessage.addListener(
       // TODO: take screen shot
       console.log('take a screenshot!')
       sessionStorage.clear()
-      // disableBox()
-      disableText()
 
       sendReponse('OK')
     }
