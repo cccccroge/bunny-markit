@@ -16,7 +16,7 @@ import { showToolBox } from './toolbox';
 const page = document.documentElement
 const draw = SVG().addTo('body')
   .size(page.scrollWidth, page.scrollHeight)
-  .css({ position: 'fixed', top: 0, 'pointer-events': 'none', 'z-index': 1000000 })
+  .css({ position: 'fixed', top: 0, 'pointer-events': 'none', 'z-index': 999999 })
 
 window.boxDrawer = new BoxDrawer(draw, {
   radiusThreshold: 40,

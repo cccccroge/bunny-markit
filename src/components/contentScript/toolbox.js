@@ -17,6 +17,7 @@ export class ToolBox extends LitElement {
       left: 50%;
       text-align: center;
       transform: translate(-50%, -50%);
+      z-index: 1000000;
     }
     .tool-box-group {
       background-color: var(--sl-color-neutral-50);

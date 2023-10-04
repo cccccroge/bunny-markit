@@ -16,6 +16,13 @@ export const disableBox = () => {
 // callback of showing hint when hover on any element
 const onPointerOver = (event) => {
   const target = event.target
+
+  // ignore if over on toolboxs
+  const toolbox = document.querySelector('tool-box')
+  if (toolbox && toolbox.contains(target)) {
+    return
+  }
+
   window.boxDrawer.drawHint(target)
 }
 const debouncedOnPointerOver = debounce(onPointerOver, 100)
