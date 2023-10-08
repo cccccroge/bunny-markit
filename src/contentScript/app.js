@@ -16,6 +16,7 @@ const draw = SVG().addTo('body')
   .size(page.scrollWidth, page.scrollHeight)
   .css({ position: 'fixed', top: 0, 'pointer-events': 'none', 'z-index': 999999 })
 
+// FIXME: maybe not global?
 window.draw = draw
 
 chrome.runtime.onMessage.addListener(
