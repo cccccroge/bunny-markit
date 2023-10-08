@@ -1,21 +1,31 @@
 import { debounce } from 'lodash';
 import Tool from './Tool'
+import BoxDrawer from '../drawers/boxDrawer';
 
 class BoxTool extends Tool {
   constructor() {
-    super()    
+    super()
+    this.drawer = new BoxDrawer(window.draw, {
+      radiusThreshold: 40,
+      radiusLarge: 10,
+      radiusSmall: 5,
+      offsetTowardsOutside: 5,
+    })
   }
 
   enter() {
-    document.addEventListener("pointerover", this._debouncedOnPointerOver)
-    document.addEventListener("pointerout", this._onPointerOut)
-    document.addEventListener("pointerdown", this._onPointerDown)
+    this.debouncedOnPointerOverCallback = this._debouncedOnPointerOver.bind(this)
+    this.onPointerOutCallback = this._onPointerOut.bind(this)
+    this.onPointerDownCallback = this._onPointerDown.bind(this)
+    document.addEventListener("pointerover", this.debouncedOnPointerOverCallback)
+    document.addEventListener("pointerout", this.onPointerOutCallback)
+    document.addEventListener("pointerdown", this.onPointerDownCallback)
   }
 
   leave() {
-    document.removeEventListener("pointerover", this._debouncedOnPointerOver)
-    document.removeEventListener("pointerout", this._onPointerOut)
-    document.removeEventListener("pointerdown", this._onPointerDown)
+    document.removeEventListener("pointerover", this.debouncedOnPointerOverCallback)
+    document.removeEventListener("pointerout", this.onPointerOutCallback)
+    document.removeEventListener("pointerdown", this.onPointerDownCallback)
   }
 
   // callback of showing hint when hover on any element
@@ -28,7 +38,7 @@ class BoxTool extends Tool {
       return
     }
 
-    window.boxDrawer.drawHint(target)
+    this.drawer.drawHint(target)
   }
 
   _debouncedOnPointerOver = debounce(this._onPointerOver, 100)
@@ -36,7 +46,7 @@ class BoxTool extends Tool {
   // callback of removing hint when move out on previous element
   _onPointerOut(event) {
     const target = event.target
-    window.boxDrawer.erase(target)
+    this.drawer.erase(target)
   }
 
   // callback of adding box to the drawer layer
@@ -44,7 +54,7 @@ class BoxTool extends Tool {
     event.stopImmediatePropagation()
     event.preventDefault()
     const target = event.target
-    window.boxDrawer.drawMark(target)
+    this.drawer.drawMark(target)
   }
 }
 
