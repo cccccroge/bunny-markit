@@ -2,22 +2,11 @@ class TextDrawer {
   constructor(draw, options) {
     this.draw = draw
     this.options = options
-    this.last = {}
     this._initGoogleFonts()
   }
 
-  drawHint(position) {
-    this._createText(position, { isHint: true })
-  }
-
   drawMark(position) {
-    this._createText(position, { isHint: false })
-  }
-
-  eraseLast() {
-    if (this.last.text !== undefined) {
-      this.last.text.remove()
-    }
+    this._createText(position)
   }
 
   _initGoogleFonts() {
@@ -38,15 +27,14 @@ class TextDrawer {
     document.head.appendChild(font)
   }
 
-  _createText(position, options) {
-    const { isHint } = options
+  _createText(position) {
     const { 
       defaultText,
       fontSize,
       fontFamily,
      } = this.options
   
-    const text = this.draw
+    this.draw
       .text(defaultText)
       .font({
         size: fontSize,
@@ -54,17 +42,6 @@ class TextDrawer {
       })
       .move(position.x, position.y)
       .fill({ color: '#f06' })
-  
-    if (isHint) {
-      text.opacity(0.5)
-  
-      this.last.position = position
-      this.last.text = text
-    }
-  }
-
-  _samePosition(positionOne, positionTwo) {
-    return positionOne.x === positionTwo.x && positionOne.y === positionTwo.y
   }
 }
 

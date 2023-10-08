@@ -1,8 +1,6 @@
 'use strict';
 
 import { SVG } from '@svgdotjs/svg.js'
-import BoxDrawer from './drawers/boxDrawer'
-import TextDrawer from './drawers/textDrawer'
 
 import '@webcomponents/webcomponentsjs' // polyfill: web components just doesn't work in content script
 import '@shoelace-style/shoelace/dist/themes/light.css';
@@ -18,18 +16,8 @@ const draw = SVG().addTo('body')
   .size(page.scrollWidth, page.scrollHeight)
   .css({ position: 'fixed', top: 0, 'pointer-events': 'none', 'z-index': 999999 })
 
-window.boxDrawer = new BoxDrawer(draw, {
-  radiusThreshold: 40,
-  radiusLarge: 10,
-  radiusSmall: 5,
-  offsetTowardsOutside: 5,
-})
-
-window.textDrawer = new TextDrawer(draw, {
-  defaultText: 'Text',
-  fontSize: 24,
-  fontFamily: "'Noto Sans', sans-serif",
-})
+// FIXME: maybe not global?
+window.draw = draw
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendReponse) {
