@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import BoxTool from './tools/BoxTool'
 import TextTool from './tools/TextTool'
+import EditTool from './tools/EditTool'
 import '@shoelace-style/shoelace/dist/components/button-group/button-group.js'
 import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
@@ -42,6 +43,7 @@ export class ToolBox extends LitElement {
 
   TOOL = {
     NONE: 'none',
+    EDIT: 'edit',
     BOX: 'box',
     TEXT: 'text',
   }
@@ -50,6 +52,7 @@ export class ToolBox extends LitElement {
     super()
     this.tools = {
       [this.TOOL.NONE]: {},
+      [this.TOOL.EDIT]: new EditTool(),
       [this.TOOL.BOX]: new BoxTool(),
       [this.TOOL.TEXT]: new TextTool(),
     }
@@ -61,6 +64,15 @@ export class ToolBox extends LitElement {
   render() {
     return html`
       <sl-button-group label="Alignment" class="tool-box-group">
+        <sl-tooltip content="Edit(E)">
+          <sl-icon-button
+            name="pencil-square"
+            class="button${this.activatedTool === this.TOOL.EDIT ? ' selected' : ''}"
+            @click="${this._onEditClick}"
+          >
+            Edit
+          </sl-icon-button>
+        </sl-tooltip>
         <sl-tooltip content="Box(B)">
           <sl-icon-button
             name="app"
@@ -83,16 +95,25 @@ export class ToolBox extends LitElement {
     `;
   }
 
+  _onEditClick() {
+    this.activatedTool = this.TOOL.EDIT
+    this.tools[this.TOOL.TEXT].leave()
+    this.tools[this.TOOL.BOX].leave()
+    this.tools[this.TOOL.EDIT].enter()
+  }
+
   _onBoxClick() {
     this.activatedTool = this.TOOL.BOX
+    this.tools[this.TOOL.EDIT].leave()
     this.tools[this.TOOL.TEXT].leave()
     this.tools[this.TOOL.BOX].enter()
   }
 
   _onTextClick() {
     this.activatedTool = this.TOOL.TEXT
-    this.tools[this.TOOL.TEXT].enter()
+    this.tools[this.TOOL.EDIT].leave()
     this.tools[this.TOOL.BOX].leave()
+    this.tools[this.TOOL.TEXT].enter()
   }
 }
 
