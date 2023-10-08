@@ -1,7 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import BoxTool from './tools/BoxTool'
-import { enableText, disableText } from './tools/text'
+import TextTool from './tools/TextTool'
 import '@shoelace-style/shoelace/dist/components/button-group/button-group.js'
 import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
@@ -51,6 +51,7 @@ export class ToolBox extends LitElement {
     this.tools = {
       [this.TOOL.NONE]: {},
       [this.TOOL.BOX]: new BoxTool(),
+      [this.TOOL.TEXT]: new TextTool(),
     }
   }
 
@@ -84,13 +85,13 @@ export class ToolBox extends LitElement {
 
   _onBoxClick() {
     this.activatedTool = this.TOOL.BOX
-    disableText()
+    this.tools[this.TOOL.TEXT].leave()
     this.tools[this.TOOL.BOX].enter()
   }
 
   _onTextClick() {
     this.activatedTool = this.TOOL.TEXT
-    enableText()
+    this.tools[this.TOOL.TEXT].enter()
     this.tools[this.TOOL.BOX].leave()
   }
 }
