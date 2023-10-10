@@ -1,8 +1,8 @@
 import { LitElement, html, css } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import './tools/BoxTool'
-import TextTool from './tools/TextTool'
-import EditTool from './tools/EditTool'
+import './tools/TextTool'
+import './tools/EditTool'
 import '@shoelace-style/shoelace/dist/components/button-group/button-group.js'
 import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
@@ -36,9 +36,6 @@ export class ToolBox extends LitElement {
     .button.selected {
       background: var(--sl-color-neutral-200);
     }
-    .button.selected svg {
-      /* fill: var(--sl-color-primary-50); */
-    }
   `;
 
   TOOL = {
@@ -46,16 +43,6 @@ export class ToolBox extends LitElement {
     EDIT: 'edit',
     BOX: 'box',
     TEXT: 'text',
-  }
-
-  constructor() {
-    super()
-    this.tools = {
-      [this.TOOL.NONE]: {},
-      [this.TOOL.EDIT]: new EditTool(),
-      // [this.TOOL.BOX]: new BoxTool(),
-      [this.TOOL.TEXT]: new TextTool(),
-    }
   }
 
   @state()
@@ -99,13 +86,17 @@ export class ToolBox extends LitElement {
   getActivatedTool() {
     switch(this.activatedTool) {
       case this.TOOL.EDIT:
-        return html ``
+        return html `
+          <edit-tool></edit-tool>
+        `
       case this.TOOL.BOX:
         return html `
           <box-tool></box-tool>
         `
       case this.TOOL.TEXT:
-        return html ``
+        return html `
+          <text-tool></text-tool>
+        `
       case this.TOOL.NONE:
         return html ``
       default:
@@ -115,23 +106,14 @@ export class ToolBox extends LitElement {
 
   _onEditClick() {
     this.activatedTool = this.TOOL.EDIT
-    this.tools[this.TOOL.TEXT].leave()
-    // this.tools[this.TOOL.BOX].leave()
-    this.tools[this.TOOL.EDIT].enter()
   }
 
   _onBoxClick() {
     this.activatedTool = this.TOOL.BOX
-    this.tools[this.TOOL.EDIT].leave()
-    this.tools[this.TOOL.TEXT].leave()
-    // this.tools[this.TOOL.BOX].enter()
   }
 
   _onTextClick() {
     this.activatedTool = this.TOOL.TEXT
-    this.tools[this.TOOL.EDIT].leave()
-    // this.tools[this.TOOL.BOX].leave()
-    this.tools[this.TOOL.TEXT].enter()
   }
 }
 

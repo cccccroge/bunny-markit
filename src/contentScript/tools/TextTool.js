@@ -1,7 +1,9 @@
-import Tool from "./Tool"
 import TextDrawer from "../drawers/textDrawer"
+import { LitElement } from "lit"
+import { customElement } from "lit/decorators.js"
 
-class TextTool extends Tool {
+@customElement('text-tool')
+class TextTool extends LitElement {
   constructor() {
     super()
     this.drawer = new TextDrawer(window.draw, {
@@ -11,7 +13,8 @@ class TextTool extends Tool {
     })    
   }
 
-  enter() {
+  connectedCallback() {
+    super.connectedCallback()
     if (document.body.style.cursor !== 'input') {
       document.body.style.cursor = 'input'
     }
@@ -19,7 +22,8 @@ class TextTool extends Tool {
     document.addEventListener("pointerdown", this.onPointerDownCallback)
   }
 
-  leave() {
+  disconnectedCallback() {
+    super.disconnectedCallback()
     document.body.style.cursor = ''
     document.removeEventListener("pointerdown", this.onPointerDownCallback)
   }

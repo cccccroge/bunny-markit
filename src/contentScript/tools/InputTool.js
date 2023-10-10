@@ -1,22 +1,26 @@
-import Tool from "./Tool";
+import { LitElement } from "lit";
 import { SVG } from "@svgdotjs/svg.js";
+import { customElement, property } from "lit/decorators.js";
 
-class InputTool extends Tool {
-  constructor(tspan) {
-    super()
-    this.tspan = tspan
-  }
+@customElement('input-tool')
+class InputTool extends LitElement {
+  @property()
+  tspan
 
-  enter() {
+  connectedCallback() {
+    super.connectedCallback()
+    console.log('tspan: ', this.tspan)
     this._switchToEditable()
   }
 
-  leave() {
+  disconnectedCallback() {
+    super.disconnectedCallback()
     this._switchToText()
   }
 
   _onEditableBlur(_e) {
-    this.leave()
+    // this.leave()
+    // send event outside?
   }
 
   _switchToEditable() {

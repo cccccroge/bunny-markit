@@ -16,6 +16,7 @@ class BoxTool extends LitElement {
   }
 
   connectedCallback() {
+    super.connectedCallback()
     this.debouncedOnPointerOverCallback = this._debouncedOnPointerOver.bind(this)
     this.onPointerOutCallback = this._onPointerOut.bind(this)
     this.onPointerDownCallback = this._onPointerDown.bind(this)
@@ -25,6 +26,7 @@ class BoxTool extends LitElement {
   }
 
   disconnectedCallback() {
+    super.disconnectedCallback()
     document.removeEventListener("pointerover", this.debouncedOnPointerOverCallback)
     document.removeEventListener("pointerout", this.onPointerOutCallback)
     document.removeEventListener("pointerdown", this.onPointerDownCallback)

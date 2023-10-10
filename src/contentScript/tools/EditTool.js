@@ -1,8 +1,11 @@
-import Tool from "./Tool";
-import InputTool from "./InputTool";
+import "./InputTool";
+import { LitElement, html } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
-class EditTool extends Tool {
-  enter() {
+@customElement('edit-tool')
+class EditTool extends LitElement {
+  connectedCallback() {
+    super.connectedCallback()
     window.draw.css({ 'pointer-events': 'initial', cursor: 'default' })
 
     this.onPointerOverCallback = this._onPointerOver.bind(this)
@@ -11,11 +14,23 @@ class EditTool extends Tool {
     document.addEventListener("pointerover", this.onPointerOverCallback)
   }
 
-  leave() {
+  disconnectedCallback() {
+    super.disconnectedCallback()
     window.draw.css({ 'pointer-events': 'none', cursor: 'initial' })
 
     document.removeEventListener("dblclick", this.onDblClickCallback)
     document.removeEventListener("pointerover", this.onPointerOverCallback)
+  }
+
+  @state()
+  textTarget = null
+
+  render() {
+    return html`
+      ${this.textTarget !== null && html`
+        <input-tool .tspan=${this.textTarget}></input-tool>
+      `}
+    `
   }
 
   _onPointerOver(e) {
@@ -26,9 +41,7 @@ class EditTool extends Tool {
     const target = e.target
 
     if (target.tagName === 'tspan') {
-      // create editable element
-      const inputTool = new InputTool(target)
-      inputTool.enter()
+      this.textTarget = target
     }
   }
 }
