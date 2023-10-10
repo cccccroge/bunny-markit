@@ -15,12 +15,18 @@ first-class DOM annotator. Simple, quick and elegant UX. Just like a bunny.
   - edit objects
   - layers
 
-features:
-- mode switching
-  - a toolbox UI that can change mode
-  - screenshot function
+next features:
+- screenshot
+  - study API
+  - copy base 64 to clipboard
+  - hide toolbox
+  - hot keys
+  - animation
   - freeze interaction when enter drawing modes (draw area could be fixed?)
   
+  
+later:
+- box edit
 - arrow mode
 ## Install
 

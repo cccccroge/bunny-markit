@@ -50,10 +50,13 @@ export class PopupApp extends LitElement {
   }
 
   async _onTakeScreenShot(_e) {
+    const dataUrl = await chrome.tabs.captureVisibleTab()
+    console.log('dataUrl: ', dataUrl)
+
     const [tab] = await chrome.tabs.query({ active: true });
     const res = await chrome.tabs.sendMessage(tab.id, 'TAKE_SCREENSHOT');
     if (res === 'OK') {
-      window.close()
+      // window.close()
     }
   }
 

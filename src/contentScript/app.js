@@ -20,7 +20,7 @@ const draw = SVG().addTo('body')
 window.draw = draw
 
 chrome.runtime.onMessage.addListener(
-  function(request, sender, sendReponse) {
+  async function(request, sender, sendReponse) {
     if (request === 'ACTIVATE') {
       sendReponse('OK')
       showToolBox()
@@ -30,8 +30,6 @@ chrome.runtime.onMessage.addListener(
       const activated = sessionStorage.getItem('bunny/activated');
       sendReponse(activated)
     } else if (request === 'TAKE_SCREENSHOT') {
-      // TODO: take screen shot
-      console.log('take a screenshot!')
       sessionStorage.clear()
 
       sendReponse('OK')
