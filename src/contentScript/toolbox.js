@@ -1,6 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import BoxTool from './tools/BoxTool'
+import './tools/BoxTool'
 import TextTool from './tools/TextTool'
 import EditTool from './tools/EditTool'
 import '@shoelace-style/shoelace/dist/components/button-group/button-group.js'
@@ -53,7 +53,7 @@ export class ToolBox extends LitElement {
     this.tools = {
       [this.TOOL.NONE]: {},
       [this.TOOL.EDIT]: new EditTool(),
-      [this.TOOL.BOX]: new BoxTool(),
+      // [this.TOOL.BOX]: new BoxTool(),
       [this.TOOL.TEXT]: new TextTool(),
     }
   }
@@ -92,13 +92,31 @@ export class ToolBox extends LitElement {
           </sl-icon-button>
         </sl-tooltip>
       </sl-button-group>
+      ${this.getActivatedTool()}
     `;
+  }
+
+  getActivatedTool() {
+    switch(this.activatedTool) {
+      case this.TOOL.EDIT:
+        return html ``
+      case this.TOOL.BOX:
+        return html `
+          <box-tool></box-tool>
+        `
+      case this.TOOL.TEXT:
+        return html ``
+      case this.TOOL.NONE:
+        return html ``
+      default:
+        throw new Error('Invalid tool: ', this.activatedTool)
+    }
   }
 
   _onEditClick() {
     this.activatedTool = this.TOOL.EDIT
     this.tools[this.TOOL.TEXT].leave()
-    this.tools[this.TOOL.BOX].leave()
+    // this.tools[this.TOOL.BOX].leave()
     this.tools[this.TOOL.EDIT].enter()
   }
 
@@ -106,13 +124,13 @@ export class ToolBox extends LitElement {
     this.activatedTool = this.TOOL.BOX
     this.tools[this.TOOL.EDIT].leave()
     this.tools[this.TOOL.TEXT].leave()
-    this.tools[this.TOOL.BOX].enter()
+    // this.tools[this.TOOL.BOX].enter()
   }
 
   _onTextClick() {
     this.activatedTool = this.TOOL.TEXT
     this.tools[this.TOOL.EDIT].leave()
-    this.tools[this.TOOL.BOX].leave()
+    // this.tools[this.TOOL.BOX].leave()
     this.tools[this.TOOL.TEXT].enter()
   }
 }
