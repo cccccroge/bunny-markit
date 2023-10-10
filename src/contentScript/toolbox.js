@@ -1,8 +1,9 @@
 import { LitElement, html, css } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import BoxTool from './tools/BoxTool'
-import TextTool from './tools/TextTool'
-import EditTool from './tools/EditTool'
+import { createRef, ref } from "lit/directives/ref.js"
+import './tools/BoxTool'
+import './tools/TextTool'
+import './tools/EditTool'
 import '@shoelace-style/shoelace/dist/components/button-group/button-group.js'
 import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
@@ -36,10 +37,12 @@ export class ToolBox extends LitElement {
     .button.selected {
       background: var(--sl-color-neutral-200);
     }
-    .button.selected svg {
-      /* fill: var(--sl-color-primary-50); */
-    }
   `;
+
+  constructor() {
+    super()
+    this.addEventListener('text-created', this._onTextCreated)
+  }
 
   TOOL = {
     NONE: 'none',
@@ -48,18 +51,16 @@ export class ToolBox extends LitElement {
     TEXT: 'text',
   }
 
-  constructor() {
-    super()
-    this.tools = {
-      [this.TOOL.NONE]: {},
-      [this.TOOL.EDIT]: new EditTool(),
-      [this.TOOL.BOX]: new BoxTool(),
-      [this.TOOL.TEXT]: new TextTool(),
-    }
-  }
+  editRef = createRef()
 
   @state()
   activatedTool = this.TOOL.NONE
+
+  async _onTextCreated(e) {
+    this.activatedTool = this.TOOL.EDIT
+    await this.updateComplete
+    this.editRef.value.setTextTarget(e.detail.textTarget)
+  }
 
   render() {
     return html`
@@ -92,28 +93,41 @@ export class ToolBox extends LitElement {
           </sl-icon-button>
         </sl-tooltip>
       </sl-button-group>
+      ${this.getActivatedTool()}
     `;
+  }
+
+  getActivatedTool() {
+    switch(this.activatedTool) {
+      case this.TOOL.EDIT:
+        return html `
+          <edit-tool ${ref(this.editRef)}></edit-tool>
+        `
+      case this.TOOL.BOX:
+        return html `
+          <box-tool></box-tool>
+        `
+      case this.TOOL.TEXT:
+        return html `
+          <text-tool></text-tool>
+        `
+      case this.TOOL.NONE:
+        return html ``
+      default:
+        throw new Error('Invalid tool: ', this.activatedTool)
+    }
   }
 
   _onEditClick() {
     this.activatedTool = this.TOOL.EDIT
-    this.tools[this.TOOL.TEXT].leave()
-    this.tools[this.TOOL.BOX].leave()
-    this.tools[this.TOOL.EDIT].enter()
   }
 
   _onBoxClick() {
     this.activatedTool = this.TOOL.BOX
-    this.tools[this.TOOL.EDIT].leave()
-    this.tools[this.TOOL.TEXT].leave()
-    this.tools[this.TOOL.BOX].enter()
   }
 
   _onTextClick() {
     this.activatedTool = this.TOOL.TEXT
-    this.tools[this.TOOL.EDIT].leave()
-    this.tools[this.TOOL.BOX].leave()
-    this.tools[this.TOOL.TEXT].enter()
   }
 }
 
