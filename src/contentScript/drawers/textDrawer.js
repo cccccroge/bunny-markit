@@ -6,7 +6,7 @@ class TextDrawer {
   }
 
   drawMark(position) {
-    this._createText(position)
+    return this._createText(position)
   }
 
   _initGoogleFonts() {
@@ -33,14 +33,18 @@ class TextDrawer {
       fontSize,
       fontFamily,
      } = this.options
+
+    const leading = 1.5
+    const lineHeightInPx = fontSize * leading
   
-    this.draw
+    return this.draw
       .text(defaultText)
       .font({
         size: fontSize,
         family: fontFamily,
       })
-      .move(position.x, position.y)
+      .leading(leading)
+      .move(position.x, position.y - lineHeightInPx / 2)
       .fill({ color: '#f06' })
   }
 }

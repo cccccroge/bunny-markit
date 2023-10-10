@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { customElement, state } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js"
 import './tools/BoxTool'
 import './tools/TextTool'
 import './tools/EditTool'
@@ -38,6 +39,11 @@ export class ToolBox extends LitElement {
     }
   `;
 
+  constructor() {
+    super()
+    this.addEventListener('text-created', this._onTextCreated)
+  }
+
   TOOL = {
     NONE: 'none',
     EDIT: 'edit',
@@ -45,8 +51,16 @@ export class ToolBox extends LitElement {
     TEXT: 'text',
   }
 
+  editRef = createRef()
+
   @state()
   activatedTool = this.TOOL.NONE
+
+  async _onTextCreated(e) {
+    this.activatedTool = this.TOOL.EDIT
+    await this.updateComplete
+    this.editRef.value.setTextTarget(e.detail.textTarget)
+  }
 
   render() {
     return html`
@@ -87,7 +101,7 @@ export class ToolBox extends LitElement {
     switch(this.activatedTool) {
       case this.TOOL.EDIT:
         return html `
-          <edit-tool></edit-tool>
+          <edit-tool ${ref(this.editRef)}></edit-tool>
         `
       case this.TOOL.BOX:
         return html `

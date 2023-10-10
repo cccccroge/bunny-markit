@@ -22,19 +22,25 @@ class EditTool extends LitElement {
     document.removeEventListener("pointerover", this.onPointerOverCallback)
   }
 
+  setTextTarget(target) {
+    this.textTarget = target
+  }
+
   @state()
   textTarget = null
 
   render() {
     return html`
-      ${this.textTarget !== null && html`
-        <input-tool
-          .tspan=${this.textTarget}
-          @blur=${this._onInputToolBlur}
-        >
-        </input-tool>
-      `}
-    `
+      ${this.textTarget
+        ? html`
+            <input-tool
+              .tspan=${this.textTarget}
+              @blur=${this._onInputToolBlur}
+            >
+            </input-tool>
+          `
+        : html``}
+    `;
   }
 
   _onPointerOver(e) {
