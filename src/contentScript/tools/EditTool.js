@@ -28,13 +28,17 @@ class EditTool extends LitElement {
   render() {
     return html`
       ${this.textTarget !== null && html`
-        <input-tool .tspan=${this.textTarget}></input-tool>
+        <input-tool
+          .tspan=${this.textTarget}
+          @blur=${this._onInputToolBlur}
+        >
+        </input-tool>
       `}
     `
   }
 
   _onPointerOver(e) {
-    // console.log('pointer over: ', e.target)
+    // TODO: show object border here
   }
 
   _onDblClick(e) {
@@ -43,6 +47,10 @@ class EditTool extends LitElement {
     if (target.tagName === 'tspan') {
       this.textTarget = target
     }
+  }
+
+  _onInputToolBlur() {
+    this.textTarget = null
   }
 }
 

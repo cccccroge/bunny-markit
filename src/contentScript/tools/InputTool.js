@@ -9,7 +9,6 @@ class InputTool extends LitElement {
 
   connectedCallback() {
     super.connectedCallback()
-    console.log('tspan: ', this.tspan)
     this._switchToEditable()
   }
 
@@ -19,8 +18,8 @@ class InputTool extends LitElement {
   }
 
   _onEditableBlur(_e) {
-    // this.leave()
-    // send event outside?
+    const event = new Event('blur', { bubles: true, composed: true })
+    this.dispatchEvent(event)
   }
 
   _switchToEditable() {
