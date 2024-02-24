@@ -15,6 +15,39 @@ class BoxDrawer {
     }
   }
 
+  drawMarkFromTwoPoints(pointA, pointB) {
+    const { x: x1, y: y1 } = pointA
+    const { x: x2, y: y2 } = pointB
+    const width = Math.abs(x1 - x2)
+    const height = Math.abs(y1 - y2)
+    const left = Math.min(x1, x2)
+    const top = Math.min(y1, y2)
+
+    this.last.rect = this.draw
+      .rect(width, height)
+      .radius(5)
+      .move(left, top)
+      .stroke({ width: 5, color: '#f06' })
+      .fill('none')
+
+    this.last.pointA = pointA
+    this.last.pointB = pointB
+  }
+
+  eraseMarkFromTwoPoints(pointA, pointB) {
+    if (!this.last.pointA || !this.last.pointB) {
+      return
+    }
+    if (
+      pointA.x === this.last.pointA.x &&
+      pointA.y === this.last.pointA.y &&
+      pointB.x === this.last.pointB.x &&
+      pointB.y === this.last.pointB.y
+    ) {
+      this.last.rect.remove();
+    }
+  }
+
   erase(element) {
     if (element === this.last.element) {
       this.last.rect.remove()
@@ -23,27 +56,27 @@ class BoxDrawer {
 
   _createRect(element, options) {
     const { isHint } = options
-    const { 
+    const {
       radiusThreshold,
       radiusLarge,
       radiusSmall,
       offsetTowardsOutside,
      } = this.options
-  
+
     const { top, left, width, height } = element.getBoundingClientRect()
     const radious =
       Math.min(width, height) < radiusThreshold ? radiusSmall : radiusLarge
-  
+
     const rect = this.draw
       .rect(width + 2 * offsetTowardsOutside, height + 2 * offsetTowardsOutside)
       .radius(radious)
       .move(left - offsetTowardsOutside, top - offsetTowardsOutside)
       .stroke({ width: 5, color: '#f06' })
       .fill('none')
-  
+
     if (isHint) {
       rect.opacity(0.5)
-  
+
       this.last.element = element
       this.last.rect = rect
     }

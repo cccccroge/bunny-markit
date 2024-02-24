@@ -3,8 +3,8 @@ import BoxDrawer from '../drawers/boxDrawer';
 import { LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
-@customElement('box-tool')
-class BoxTool extends LitElement {
+@customElement('box-snap-tool')
+class BoxSnapTool extends LitElement {
   constructor() {
     super()
     this.drawer = new BoxDrawer(window.draw, {
@@ -62,4 +62,4 @@ class BoxTool extends LitElement {
   }
 }
 
-export default BoxTool
+export default BoxSnapTool

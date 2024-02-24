@@ -1,7 +1,8 @@
 import { LitElement, html, css } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js"
-import './tools/BoxTool'
+import './tools/BoxSnapTool'
+import './tools/BoxDrawTool'
 import './tools/TextTool'
 import './tools/EditTool'
 import '@shoelace-style/shoelace/dist/components/button-group/button-group.js'
@@ -9,6 +10,9 @@ import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import '@shoelace-style/shoelace/dist/components/menu/menu.js';
+import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js';
+import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js';
 
 @customElement('tool-box')
 export class ToolBox extends LitElement {
@@ -47,7 +51,8 @@ export class ToolBox extends LitElement {
   TOOL = {
     NONE: 'none',
     EDIT: 'edit',
-    BOX: 'box',
+    BOX_SNAP: 'box-snap',
+    BOX_DRAW: 'box-draw',
     TEXT: 'text',
   }
 
@@ -75,13 +80,20 @@ export class ToolBox extends LitElement {
           </sl-icon-button>
         </sl-tooltip>
         <sl-tooltip content="Box(B)">
-          <sl-icon-button
-            name="app"
-            class="button${this.activatedTool === this.TOOL.BOX ? ' selected' : ''}"
-            @click="${this._onBoxClick}"
-          >
-            Box
-          </sl-icon-button>
+          <sl-dropdown>
+            <sl-icon-button
+              name="app"
+              slot="trigger"
+              caret
+              class="button${this.activatedTool === this.TOOL.BOX ? ' selected' : ''}"
+            >
+              Box
+            </sl-icon-button>
+            <sl-menu>
+              <sl-menu-item value="cut" @click="${this._onBoxSnapClick}">Snap</sl-menu-item>
+              <sl-menu-item value="copy" @click="${this._onBoxDrawClick}">Draw</sl-menu-item>
+            </sl-menu>
+          </sl-dropdown>
         </sl-tooltip>
         <sl-tooltip content="Text(T)">
           <sl-icon-button
@@ -103,9 +115,13 @@ export class ToolBox extends LitElement {
         return html `
           <edit-tool ${ref(this.editRef)}></edit-tool>
         `
-      case this.TOOL.BOX:
+      case this.TOOL.BOX_SNAP:
         return html `
-          <box-tool></box-tool>
+          <box-snap-tool></box-snap-tool>
+        `
+      case this.TOOL.BOX_DRAW:
+        return html `
+          <box-draw-tool></box-draw-tool>
         `
       case this.TOOL.TEXT:
         return html `
@@ -122,8 +138,12 @@ export class ToolBox extends LitElement {
     this.activatedTool = this.TOOL.EDIT
   }
 
-  _onBoxClick() {
-    this.activatedTool = this.TOOL.BOX
+  _onBoxSnapClick() {
+    this.activatedTool = this.TOOL.BOX_SNAP
+  }
+
+  _onBoxDrawClick() {
+    this.activatedTool = this.TOOL.BOX_DRAW
   }
 
   _onTextClick() {
