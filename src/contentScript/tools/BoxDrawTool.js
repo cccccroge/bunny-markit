@@ -60,8 +60,10 @@ class BoxDrawTool extends LitElement {
     this.drawer.drawMarkFromTwoPoints(this.pointDragStart, this.pointCurrent)
   }
 
-  _onPointerUpCallback(event) {
+  _onPointerUpCallback(_event) {
     this.hasDragged = false
+    this.pointDragStart = { x: -1, y: -1 }
+    this.pointCurrent = { x: -1, y: -1 }
   }
 }
 
