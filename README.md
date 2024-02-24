@@ -1,4 +1,4 @@
-# <img src="public/icons/icon_48.png" width="45" align="left"> Bunny Markit
+# <img src="public/icons/icon_48.png" width="45" align="left"> &nbsp; Bunny Markit
 first-class DOM annotator. Simple, quick and elegant UX. Just like a bunny.
 # plan
 - different drawing modes with hotkeys, hint
