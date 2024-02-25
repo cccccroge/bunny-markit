@@ -26,6 +26,7 @@ features:
 bugs:
 - scrolling but not moving
 - toolbox events should not propagate
+- svg creation process should not generate event to the background
 ## Install
 
 [**Chrome** extension]() <!-- TODO: Add chrome extension link inside parenthesis -->
