@@ -1,3 +1,5 @@
+import { BoxObject } from "../objects/BoxObject"
+
 class BoxDrawer {
   constructor(draw, options) {
     this.draw = draw
@@ -10,8 +12,16 @@ class BoxDrawer {
   }
 
   drawMark(element) {
+    if (!element === this.last.element) {
+      return
+    }
+    const rect = this._createRect(element, { isHint: false })
+    new BoxObject(rect)
+  }
+
+  erase(element) {
     if (element === this.last.element) {
-      this._createRect(element, { isHint: false })
+      this.last.rect.remove()
     }
   }
 
@@ -23,15 +33,18 @@ class BoxDrawer {
     const left = Math.min(x1, x2)
     const top = Math.min(y1, y2)
 
-    this.last.rect = this.draw
+    const rect = this.draw
       .rect(width, height)
       .radius(5)
       .move(left, top)
       .stroke({ width: 5, color: '#f06' })
       .fill('none')
 
+    this.last.rect = rect
     this.last.pointA = pointA
     this.last.pointB = pointB
+
+    new BoxObject(rect)
   }
 
   eraseMarkFromTwoPoints(pointA, pointB) {
@@ -45,12 +58,6 @@ class BoxDrawer {
       pointB.y === this.last.pointB.y
     ) {
       this.last.rect.remove();
-    }
-  }
-
-  erase(element) {
-    if (element === this.last.element) {
-      this.last.rect.remove()
     }
   }
 
@@ -80,6 +87,8 @@ class BoxDrawer {
       this.last.element = element
       this.last.rect = rect
     }
+
+    return rect
   }
 }
 

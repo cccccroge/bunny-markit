@@ -1,4 +1,5 @@
 import "./InputTool";
+import "./TransformTool"
 import { LitElement, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
@@ -8,10 +9,8 @@ class EditTool extends LitElement {
     super.connectedCallback()
     window.draw.css({ 'pointer-events': 'initial', cursor: 'default' })
 
-    this.onPointerOverCallback = this._onPointerOver.bind(this)
     this.onDblClickCallback = this._onDblClick.bind(this)
     document.addEventListener("dblclick", this.onDblClickCallback)
-    document.addEventListener("pointerover", this.onPointerOverCallback)
   }
 
   disconnectedCallback() {
@@ -19,32 +18,48 @@ class EditTool extends LitElement {
     window.draw.css({ 'pointer-events': 'none', cursor: 'initial' })
 
     document.removeEventListener("dblclick", this.onDblClickCallback)
-    document.removeEventListener("pointerover", this.onPointerOverCallback)
   }
 
   setTextTarget(target) {
     this.textTarget = target
   }
 
+  addSelectedSvgs(svg) {
+    this.selectedSvgs = [...this.selectedSvgs, svg]
+  }
+
   @state()
   textTarget = null
 
+  @state()
+  selectedSvgs = []
+
   render() {
     return html`
-      ${this.textTarget
-        ? html`
-            <input-tool
-              .tspan=${this.textTarget}
-              @blur=${this._onInputToolBlur}
-            >
-            </input-tool>
-          `
-        : html``}
+      ${this._getTool()}
     `;
   }
 
-  _onPointerOver(e) {
-    // TODO: show object border here
+  _getTool() {
+    if (this.textTarget) {
+      return html`
+        <input-tool
+          .tspan=${this.textTarget}
+          @blur=${this._onInputToolBlur}
+        >
+        </input-tool>
+      `
+    }
+    if (this.selectedSvgs.length > 0) {
+      return html`
+        <transform-tool
+          .svgs=${this.selectedSvgs}
+        >
+        </transform-tool>
+      `
+    }
+
+    return html``
   }
 
   _onDblClick(e) {
