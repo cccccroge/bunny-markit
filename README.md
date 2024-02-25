@@ -22,6 +22,11 @@ features:
   - freeze interaction when enter drawing modes (draw area could be fixed?)
   
 - arrow mode
+
+bugs:
+- scrolling but not moving
+- toolbox events should not propagate
+- svg creation process should not generate event to the background
 ## Install
 
 [**Chrome** extension]() <!-- TODO: Add chrome extension link inside parenthesis -->

@@ -20,6 +20,10 @@ class BoxDrawTool extends LitElement {
   connectedCallback() {
     super.connectedCallback()
 
+    if (document.body.style.cursor !== 'crosshair') {
+      document.body.style.cursor = 'crosshair'
+    }
+
     this.onPointerDownCallback = this._onPointerDownCallback.bind(this)
     this.onPointerMoveCallback = this._onPointerMoveCallback.bind(this)
     this.onPointerUpCallback = this._onPointerUpCallback.bind(this)
@@ -30,6 +34,9 @@ class BoxDrawTool extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback()
+
+    document.body.style.cursor = ''
+
     document.removeEventListener("pointerdown", this.onPointerDownCallback)
     document.removeEventListener("pointermove", this.onPointerMoveCallback)
     document.removeEventListener("pointerup", this.onPointerUpCallback)
