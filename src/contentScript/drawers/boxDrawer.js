@@ -1,3 +1,5 @@
+import { BoxObject } from "../objects/BoxObject"
+
 class BoxDrawer {
   constructor(draw, options) {
     this.draw = draw
@@ -14,7 +16,7 @@ class BoxDrawer {
       return
     }
     const rect = this._createRect(element, { isHint: false })
-    this._attachEvents(rect)
+    new BoxObject(rect)
   }
 
   erase(element) {
@@ -42,7 +44,7 @@ class BoxDrawer {
     this.last.pointA = pointA
     this.last.pointB = pointB
 
-    this._attachEvents(rect)
+    new BoxObject(rect)
   }
 
   eraseMarkFromTwoPoints(pointA, pointB) {
@@ -87,21 +89,6 @@ class BoxDrawer {
     }
 
     return rect
-  }
-
-  _attachEvents(rect) {
-    let selected = false
-
-    rect.on('pointerover', () => { rect.stroke({ color: '#fff' }) })
-    rect.on('click', () => {
-      selected = true
-      rect.stroke({ color: '#fff' })
-    })
-    rect.on('pointerout', () => {
-      if (!selected) {
-        rect.stroke({ color: '#f06' })
-      }
-    })
   }
 }
 

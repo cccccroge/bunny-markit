@@ -46,6 +46,7 @@ export class ToolBox extends LitElement {
   constructor() {
     super()
     this.addEventListener('text-created', this._onTextCreated)
+    document.addEventListener('box-selected', this._onBoxSelected.bind(this))
   }
 
   TOOL = {
@@ -65,6 +66,13 @@ export class ToolBox extends LitElement {
     this.activatedTool = this.TOOL.EDIT
     await this.updateComplete
     this.editRef.value.setTextTarget(e.detail.textTarget)
+  }
+
+  async _onBoxSelected(e) {
+    this.activatedTool = this.TOOL.EDIT
+    await this.updateComplete
+    const svg = e.detail.svg
+    this.editRef.value.addSelectedSvgs(svg)
   }
 
   render() {
