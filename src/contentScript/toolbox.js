@@ -41,6 +41,9 @@ export class ToolBox extends LitElement {
     .button.selected {
       background: var(--sl-color-neutral-200);
     }
+    .dropdown-menu sl-icon {
+      font-size: 1.5rem;
+    }
   `;
 
   constructor() {
@@ -61,6 +64,7 @@ export class ToolBox extends LitElement {
 
   @state()
   activatedTool = this.TOOL.NONE
+  boxLastSelected = this.TOOL.BOX_SNAP
 
   async _onTextCreated(e) {
     this.activatedTool = this.TOOL.EDIT
@@ -81,7 +85,9 @@ export class ToolBox extends LitElement {
         <sl-tooltip content="Edit(E)">
           <sl-icon-button
             name="pencil-square"
-            class="button${this.activatedTool === this.TOOL.EDIT ? ' selected' : ''}"
+            class="button${this.activatedTool === this.TOOL.EDIT
+              ? ' selected'
+              : ''}"
             @click="${this._onEditClick}"
           >
             Edit
@@ -90,34 +96,42 @@ export class ToolBox extends LitElement {
         <sl-tooltip content="Box(B)">
           <sl-dropdown>
             <sl-icon-button
-              name="app"
+              name="${this._getBoxIconName()}"
               slot="trigger"
               caret
-              class="button${this.activatedTool === this.TOOL.BOX ? ' selected' : ''}"
+              class="button${this.activatedTool === this.TOOL.BOX_SNAP || this.activatedTool === this.TOOL.BOX_DRAW
+                ? ' selected'
+                : ''}"
             >
               Box
             </sl-icon-button>
-            <sl-menu>
-              <sl-menu-item value="cut" @click="${this._onBoxSnapClick}">Snap</sl-menu-item>
-              <sl-menu-item value="copy" @click="${this._onBoxDrawClick}">Draw</sl-menu-item>
+            <sl-menu class="dropdown-menu">
+              <sl-menu-item @click="${this._onBoxSnapClick}"
+                >Snap<sl-icon slot="prefix" name="card-text"></sl-icon></sl-menu-item
+              >
+              <sl-menu-item @click="${this._onBoxDrawClick}"
+                >Draw<sl-icon slot="prefix" name="app"></sl-icon></sl-menu-item
+              >
             </sl-menu>
           </sl-dropdown>
         </sl-tooltip>
         <sl-tooltip content="Text(T)">
           <sl-icon-button
             name="type"
-            class="button${this.activatedTool === this.TOOL.TEXT ? ' selected' : ''}"
+            class="button${this.activatedTool === this.TOOL.TEXT
+              ? ' selected'
+              : ''}"
             @click="${this._onTextClick}"
           >
             Text
           </sl-icon-button>
         </sl-tooltip>
       </sl-button-group>
-      ${this.getActivatedTool()}
+      ${this._getActivatedTool()}
     `;
   }
 
-  getActivatedTool() {
+  _getActivatedTool() {
     switch(this.activatedTool) {
       case this.TOOL.EDIT:
         return html `
@@ -142,16 +156,26 @@ export class ToolBox extends LitElement {
     }
   }
 
+  _getBoxIconName() {
+    const map = {
+      [this.TOOL.BOX_SNAP]: 'card-text',
+      [this.TOOL.BOX_DRAW]: 'app',
+    }
+    return map[this.activatedTool] || map[this.boxLastSelected]
+  }
+
   _onEditClick() {
     this.activatedTool = this.TOOL.EDIT
   }
 
   _onBoxSnapClick() {
     this.activatedTool = this.TOOL.BOX_SNAP
+    this.boxLastSelected = this.TOOL.BOX_SNAP
   }
 
   _onBoxDrawClick() {
     this.activatedTool = this.TOOL.BOX_DRAW
+    this.boxLastSelected = this.TOOL.BOX_DRAW
   }
 
   _onTextClick() {
