@@ -25,7 +25,7 @@ class BoxDrawer {
     }
   }
 
-  drawMarkFromTwoPoints(pointA, pointB) {
+  drawMarkFromTwoPoints(pointA, pointB, attachEvents=false) {
     const { x: x1, y: y1 } = pointA
     const { x: x2, y: y2 } = pointB
     const width = Math.abs(x1 - x2)
@@ -44,7 +44,9 @@ class BoxDrawer {
     this.last.pointA = pointA
     this.last.pointB = pointB
 
-    new BoxObject(rect)
+    if (attachEvents) {
+      new BoxObject(rect)
+    }
   }
 
   eraseMarkFromTwoPoints(pointA, pointB) {

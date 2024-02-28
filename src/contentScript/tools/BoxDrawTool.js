@@ -68,6 +68,11 @@ class BoxDrawTool extends LitElement {
   }
 
   _onPointerUpCallback(_event) {
+    if (this.pointDragStart.x !== -1) {
+      this.drawer.eraseMarkFromTwoPoints(this.pointDragStart, this.pointCurrent)
+    }
+    this.drawer.drawMarkFromTwoPoints(this.pointDragStart, this.pointCurrent, true)
+
     this.hasDragged = false
     this.pointDragStart = { x: -1, y: -1 }
     this.pointCurrent = { x: -1, y: -1 }
