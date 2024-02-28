@@ -1,57 +1,33 @@
-const STATUS = {
-  UNSELECTED: 'unselected',
-  HOVERED: 'hovered',
-  SELECTED: 'selected',
+import { IdleState } from "./IdleState";
+import { HoveredState } from "./HoveredState";
+import { SelectedState } from "./SelectedState";
+
+export const BoxState = {
+  IDLE: "idle",
+  HOVERED: "hovered",
+  SELECTED: "selected",
 }
 
 export class BoxObject {
   constructor(svg) {
-    this.svg = svg
-    this.status = STATUS.UNSELECTED
-    this._setupCallbacks()
+    this._initStates(svg)
   }
 
-  _redraw() {
-    if (this.status === STATUS.SELECTED) {
-      this.svg.stroke({ color: '#fff' })
-    } else if (this.status === STATUS.HOVERED) {
-      this.svg.stroke({ color: '#fff' })
-    } else {
-      this.svg.stroke({ color: '#f06' })
+  _initStates(svg) {
+    this.states = {
+      [BoxState.IDLE]: new IdleState(svg, this),
+      [BoxState.HOVERED]: new HoveredState(svg, this),
+      [BoxState.SELECTED]: new SelectedState(svg, this),
     }
+    this.state = null
+    this.changeState(BoxState.IDLE)
   }
 
-  _setupCallbacks() {
-    this.svg.on('pointerover', () => {
-      if (this.status === STATUS.SELECTED) {
-        return
-      }
-      this.status = STATUS.HOVERED
-      this._redraw()
-    })
-    this.svg.on('pointerdown', (e) => {
-      this.status = STATUS.SELECTED
-      this._redraw()
-      e.stopPropagation()
-
-      const boxSelectedEvent = new CustomEvent('box-selected', {
-        bubles: true,
-        composed: true,
-        detail: { svg: this.svg },
-      });
-      document.dispatchEvent(boxSelectedEvent)
-    })
-    this.svg.on('pointerout', () => {
-      if (this.status === STATUS.HOVERED) {
-        this.status = STATUS.UNSELECTED
-        this._redraw()
-      }
-    })
-    document.addEventListener('pointerdown', () => {
-      if (this.status === STATUS.SELECTED) {
-        this.status = STATUS.UNSELECTED
-        this._redraw()
-      }
-    })
+  changeState(state, params) {
+    if (this.state) {
+      this.states[this.state].teardown()
+    }
+    this.state = state
+    this.states[state].setup(params)
   }
 }
