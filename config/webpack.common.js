@@ -52,19 +52,6 @@ const common = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: {
-            assumptions: {
-              setPublicClassFields: true,
-            },
-            presets: [['@babel/preset-env', { targets: 'defaults' }]],
-            plugins: [
-              [
-                '@babel/plugin-proposal-decorators',
-                { version: '2018-09', decoratorsBeforeExport: true },
-              ],
-              ['@babel/plugin-transform-class-properties'],
-            ],
-          },
         },
       },
     ],
