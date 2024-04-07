@@ -7,7 +7,7 @@ export class HoveredState {
   }
 
   setup() {
-    this.svg.stroke({ color: '#fff' })
+    this.svg.stroke({ color: '#e06666' })
     window.draw.css({ cursor: 'grab' })
 
     this.onPointeroutCallback = this._onPointerout.bind(this)

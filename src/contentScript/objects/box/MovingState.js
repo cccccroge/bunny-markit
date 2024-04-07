@@ -1,10 +1,8 @@
 import { BoxState } from "./BoxObject"
 
-export class SelectedState {
+export class MovingState {
   constructor(svg, boxObj) {
     this.svg = svg
-    this.draw = window.draw
-    this.controls = {}
     this.boxObj = boxObj
 
     this.isMoving = false
@@ -23,15 +21,19 @@ export class SelectedState {
   }
 
   setup(params) {
-    this.svg.stroke({ color: '#e06666' })
+    console.log('enter SELECTED')
+    this.svg.stroke({ color: '#fff' })
     window.draw.css({ cursor: 'grab' })
-    this.setupControls()
 
     this.onPointerdownCallback = this._onPointerdown.bind(this)
+    this.onPointermoveCallback = this._onPointermove.bind(this)
+    this.onPointerupCallback = this._onPointerup.bind(this)
     this.onClickOutsideCallback = this._onClickOutside.bind(this)
     this.onPointeroverCallback = this._onPointerover.bind(this)
     this.onPointeroutCallback = this._onPointerout.bind(this)
     this.svg.on('pointerdown', this.onPointerdownCallback)
+    document.addEventListener('pointermove', this.onPointermoveCallback)
+    document.addEventListener('pointerup', this.onPointerupCallback)
     document.addEventListener('pointerdown', this.onClickOutsideCallback)
     this.svg.on('pointerover', this.onPointeroverCallback)
     this.svg.on('pointerout', this.onPointeroutCallback)
@@ -50,7 +52,6 @@ export class SelectedState {
 
   teardown() {
     window.draw.css({ cursor: 'initial' })
-    this.removeControls()
 
     this.svg.off('pointerdown', this.onPointerdownCallback)
     document.a
@@ -61,51 +62,7 @@ export class SelectedState {
     this.svg.off('pointerout', this.onPointeroutCallback)
   }
 
-  setupControls() {
-    const x = this.svg.x()
-    const y = this.svg.y()
-    const width = this.svg.width()
-    const height = this.svg.height()
-
-    this.controls['shape'] = this.draw
-      .rect(width, height)
-      .move(x, y)
-      .stroke({ width: 1.5, color: '#3d85c6' })
-      .fill('none')
-
-    this.controls['topLeft'] = this.draw
-      .rect(8, 8)
-      .center(x, y)
-      .stroke({ width: 1.5, color: '#3d85c6' })
-
-    this.controls['topRight'] = this.draw
-      .rect(8, 8)
-      .center(x + width, y)
-      .stroke({ width: 1.5, color: '#3d85c6' })
-
-    this.controls['bottomLeft'] = this.draw
-      .rect(8, 8)
-      .center(x, y + height)
-      .stroke({ width: 1.5, color: '#3d85c6' })
-
-    this.controls['bottomRight'] = this.draw
-      .rect(8, 8)
-      .center(x + width, y + height)
-      .stroke({ width: 1.5, color: '#3d85c6' })
-  }
-
-  removeControls() {
-    for (const [, svg] of Object.entries(this.controls)) {
-      svg.remove();
-    }
-    this.controls = {}
-  }
-
   _onPointerdown(e) {
-    // check which kind of the control element are we operate on
-    // - go to moving
-    // - go to resizing
-
     e.stopPropagation()
     this.isMoving = true
 
@@ -120,13 +77,30 @@ export class SelectedState {
     this.currentPoint.y = clientY
   }
 
+  _onPointermove(e) {
+    const { clientX, clientY } = e
+
+    if (this.isMoving) {
+      this.currentPoint.x = clientX
+      this.currentPoint.y = clientY
+
+      this.svg.attr({
+        x: this.originalPoint.x + this.currentPoint.x - this.startPoint.x,
+        y: this.originalPoint.y + this.currentPoint.y - this.startPoint.y,
+      })
+    }
+  }
+
+  _onPointerup() {
+    this.isMoving = false
+    window.draw.css({ cursor: 'initial' })
+  }
+
   _onClickOutside() {
     this.boxObj.changeState(BoxState.IDLE)
   }
 
   _onPointerover() {
-    // TODO: see which control point we are operating on
-    // change to corresponding arrow icon
     window.draw.css({ cursor: 'grab' })
   }
 
