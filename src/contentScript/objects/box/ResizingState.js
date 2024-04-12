@@ -5,6 +5,7 @@ export class ResizingState {
   constructor(svg, boxObj) {
     this.svg = svg
     this.boxObj = boxObj
+    this.control = null
 
     this.startPoint = {
       x: -1,
@@ -50,8 +51,9 @@ export class ResizingState {
   }
 
   initializePositions(params) {
-    const { x, y } = params
+    const { x, y, control } = params
 
+    this.control = control
     this.originalPoint = {
       x: this.svg.x(),
       y: this.svg.y(),
@@ -76,12 +78,37 @@ export class ResizingState {
     this.currentPoint.x = clientX
     this.currentPoint.y = clientY
 
-    this.svg.attr({
-      x: this.originalPoint.x - (this.startPoint.x - this.currentPoint.x),
-      y: this.originalPoint.y - (this.startPoint.y - this.currentPoint.y),
-      width: this.originalSize.width + (this.startPoint.x - this.currentPoint.x),
-      height: this.originalSize.height + (this.startPoint.y - this.currentPoint.y)
-    })
+    switch(this.control) {
+      case 'topLeft':
+        this.svg.attr({
+          x: this.originalPoint.x - (this.startPoint.x - this.currentPoint.x),
+          y: this.originalPoint.y - (this.startPoint.y - this.currentPoint.y),
+          width: this.originalSize.width + (this.startPoint.x - this.currentPoint.x),
+          height: this.originalSize.height + (this.startPoint.y - this.currentPoint.y)
+        })
+        break
+      case 'topRight':
+        this.svg.attr({
+
+          y: this.originalPoint.y + (this.currentPoint.y - this.startPoint.y),
+          width: this.originalSize.width + (this.currentPoint.x - this.startPoint.x),
+          height: this.originalSize.height + (this.startPoint.y - this.currentPoint.y)
+        })
+        break
+      case 'bottomRight':
+        this.svg.attr({
+          width: this.originalSize.width + (this.currentPoint.x - this.startPoint.x),
+          height: this.originalSize.height + (this.currentPoint.y - this.startPoint.y)
+        })
+        break
+      case 'bottomLeft':
+        this.svg.attr({
+          x: this.originalPoint.x - (this.startPoint.x - this.currentPoint.x),
+          width: this.originalSize.width + (this.startPoint.x - this.currentPoint.x),
+          height: this.originalSize.height + (this.currentPoint.y - this.startPoint.y)
+        })
+        break
+    }
   }
 
   _onPointerup() {
