@@ -87,6 +87,12 @@ export class ResizingState {
           height: this.originalSize.height + (this.startPoint.y - this.currentPoint.y)
         })
         break
+      case 'top':
+        this.svg.attr({
+          y: this.originalPoint.y - (this.startPoint.y - this.currentPoint.y),
+          height: this.originalSize.height + (this.startPoint.y - this.currentPoint.y)
+        })
+        break
       case 'topRight':
         this.svg.attr({
 
@@ -95,9 +101,19 @@ export class ResizingState {
           height: this.originalSize.height + (this.startPoint.y - this.currentPoint.y)
         })
         break
+      case 'right':
+        this.svg.attr({
+          width: this.originalSize.width + (this.currentPoint.x - this.startPoint.x),
+        })
+        break
       case 'bottomRight':
         this.svg.attr({
           width: this.originalSize.width + (this.currentPoint.x - this.startPoint.x),
+          height: this.originalSize.height + (this.currentPoint.y - this.startPoint.y)
+        })
+        break
+      case 'bottom':
+        this.svg.attr({
           height: this.originalSize.height + (this.currentPoint.y - this.startPoint.y)
         })
         break
@@ -106,6 +122,12 @@ export class ResizingState {
           x: this.originalPoint.x - (this.startPoint.x - this.currentPoint.x),
           width: this.originalSize.width + (this.startPoint.x - this.currentPoint.x),
           height: this.originalSize.height + (this.currentPoint.y - this.startPoint.y)
+        })
+        break
+      case 'left':
+        this.svg.attr({
+          x: this.originalPoint.x + (this.currentPoint.x - this.startPoint.x),
+          width: this.originalSize.width + (this.startPoint.x - this.currentPoint.x),
         })
         break
     }
