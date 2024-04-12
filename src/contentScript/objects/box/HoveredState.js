@@ -37,11 +37,6 @@ export class HoveredState {
     });
     document.dispatchEvent(boxSelectedEvent)
 
-    this.boxObj.changeState(
-      BoxState.SELECTED,
-      {
-        initialPoint: { x: e.clientX, y: e.clientY },
-      }
-    )
+    this.boxObj.changeState(BoxState.SELECTED)
   }
 }

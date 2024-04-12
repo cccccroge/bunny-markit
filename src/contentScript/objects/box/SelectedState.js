@@ -7,58 +7,37 @@ export class SelectedState {
     this.controls = {}
     this.boxObj = boxObj
 
-    this.isMoving = false
-    this.startPoint = {
-      x: -1,
-      y: -1,
-    }
-    this.currentPoint = {
-      x: -1,
-      y: -1,
-    }
-    this.originalPoint = {
-      x: svg.x(),
-      y: svg.y(),
-    }
+    this.hoveredTarget = null
+
+    this.onPointerdownCallback = this._onPointerdown.bind(this)
+    this.onShapePointerover = this._onShapePointerover.bind(this)
+    this.onShapePointerout = this._onShapePointerout.bind(this)
+    this.onTopLeftPointerover = this._onTopLeftPointerover.bind(this)
+    this.onTopLeftPointerout = this._onTopLeftPointerout.bind(this)
+    this.onTopRightPointerover = this._onTopRightPointerover.bind(this)
+    this.onTopRightPointerout = this._onTopRightPointerout.bind(this)
+    this.onBottomLeftPointerover = this._onBottomLeftPointerover.bind(this)
+    this.onBottomLeftPointerout = this._onBottomLeftPointerout.bind(this)
+    this.onBottomRightPointerover = this._onBottomRightPointerover.bind(this)
+    this.onBottomRightPointerout = this._onBottomRightPointerout.bind(this)
+    this.onFillPointerover = this._onFillPointerover.bind(this)
+    this.onFillPointerout = this._onFillPointerout.bind(this)
+
   }
 
-  setup(params) {
+  setup() {
     this.svg.stroke({ color: '#e06666' })
     window.draw.css({ cursor: 'grab' })
     this.setupControls()
 
-    this.onPointerdownCallback = this._onPointerdown.bind(this)
-    this.onClickOutsideCallback = this._onClickOutside.bind(this)
-    this.onPointeroverCallback = this._onPointerover.bind(this)
-    this.onPointeroutCallback = this._onPointerout.bind(this)
-    this.svg.on('pointerdown', this.onPointerdownCallback)
-    document.addEventListener('pointerdown', this.onClickOutsideCallback)
-    this.svg.on('pointerover', this.onPointeroverCallback)
-    this.svg.on('pointerout', this.onPointeroutCallback)
-
-    const { x, y } = params.initialPoint
-    this.isMoving = true
-    this.originalPoint = {
-      x: this.svg.x(),
-      y: this.svg.y(),
-    }
-    this.startPoint.x = x
-    this.startPoint.y = y
-    this.currentPoint.x = x
-    this.currentPoint.y = y
+    document.addEventListener('pointerdown', this.onPointerdownCallback)
   }
 
   teardown() {
     window.draw.css({ cursor: 'initial' })
     this.removeControls()
 
-    this.svg.off('pointerdown', this.onPointerdownCallback)
-    document.a
-    document.removeEventListener('pointermove', this.onPointermoveCallback)
-    document.removeEventListener('pointerup', this.onPointerupCallback)
-    document.removeEventListener('pointerdown', this.onClickOutsideCallback)
-    this.svg.off('pointerover', this.onPointeroverCallback)
-    this.svg.off('pointerout', this.onPointeroutCallback)
+    document.removeEventListener('pointerdown', this.onPointerdownCallback)
   }
 
   setupControls() {
@@ -67,70 +46,167 @@ export class SelectedState {
     const width = this.svg.width()
     const height = this.svg.height()
 
+    this.controls['fill'] = this.draw
+      .rect(width, height)
+      .move(x, y)
+      .opacity(0)
+    this.controls['fill'].on('pointerover', this.onFillPointerover)
+    this.controls['fill'].on('pointerout', this.onFillPointerout)
+
     this.controls['shape'] = this.draw
       .rect(width, height)
       .move(x, y)
       .stroke({ width: 1.5, color: '#3d85c6' })
       .fill('none')
+    this.controls['shape'].on('pointerover', this.onShapePointerover)
+    this.controls['shape'].on('pointerout', this.onShapePointerout)
 
     this.controls['topLeft'] = this.draw
       .rect(8, 8)
       .center(x, y)
       .stroke({ width: 1.5, color: '#3d85c6' })
+    this.controls['topLeft'].on('pointerover', this.onTopLeftPointerover)
+    this.controls['topLeft'].on('pointerout', this.onTopLeftPointerout)
 
     this.controls['topRight'] = this.draw
       .rect(8, 8)
       .center(x + width, y)
       .stroke({ width: 1.5, color: '#3d85c6' })
+    this.controls['topRight'].on('pointerover', this.onTopRightPointerover)
+    this.controls['topRight'].on('pointerout', this.onTopRightPointerout)
 
     this.controls['bottomLeft'] = this.draw
       .rect(8, 8)
       .center(x, y + height)
       .stroke({ width: 1.5, color: '#3d85c6' })
+    this.controls['bottomLeft'].on('pointerover', this.onBottomLeftPointerover)
+    this.controls['bottomLeft'].on('pointerout', this.onBottomLeftPointerout)
 
     this.controls['bottomRight'] = this.draw
       .rect(8, 8)
       .center(x + width, y + height)
       .stroke({ width: 1.5, color: '#3d85c6' })
+    this.controls['bottomRight'].on('pointerover', this.onBottomRightPointerover)
+    this.controls['bottomRight'].on('pointerout', this.onBottomRightPointerout)
   }
 
   removeControls() {
+    this.controls['shape'].off('pointerover', this.onShapePointerover)
+    this.controls['shape'].off('pointerout', this.onShapePointerout)
+
     for (const [, svg] of Object.entries(this.controls)) {
       svg.remove();
     }
     this.controls = {}
   }
 
-  _onPointerdown(e) {
-    // check which kind of the control element are we operate on
-    // - go to moving
-    // - go to resizing
-
-    e.stopPropagation()
-    this.isMoving = true
-
-    this.originalPoint = {
-      x: this.svg.x(),
-      y: this.svg.y(),
-    }
+  _onShapePointerover(e) {
     const { clientX, clientY } = e
-    this.startPoint.x = clientX
-    this.startPoint.y = clientY
-    this.currentPoint.x = clientX
-    this.currentPoint.y = clientY
+    if (clientX > this.svg.x() && clientX < this.svg.x() + this.svg.width()) {
+      window.draw.css({ cursor: 'ns-resize' })
+      if (clientY < this.svg.y() + this.svg.height()) {
+        this.hoveredTarget = 'top'
+      } else {
+        this.hoveredTarget = 'bottom'
+      }
+    } else if (clientY > this.svg.y() && clientY < this.svg.y() + this.svg.height()) {
+      window.draw.css({ cursor: 'ew-resize' })
+      if (clientX < this.svg.x() + this.svg.width()) {
+        this.hoveredTarget = 'left'
+      } else {
+        this.hoveredTarget = 'right'
+      }
+    }
   }
 
-  _onClickOutside() {
-    this.boxObj.changeState(BoxState.IDLE)
-  }
-
-  _onPointerover() {
-    // TODO: see which control point we are operating on
-    // change to corresponding arrow icon
-    window.draw.css({ cursor: 'grab' })
-  }
-
-  _onPointerout() {
+  _onShapePointerout() {
     window.draw.css({ cursor: 'initial' })
+    this.hoveredTarget = null
+  }
+
+  _onTopLeftPointerover() {
+    window.draw.css({ cursor: 'nwse-resize' })
+    this.hoveredTarget = 'topLeft'
+  }
+
+  _onTopLeftPointerout() {
+    window.draw.css({ cursor: 'initial' })
+    this.hoveredTarget = null
+  }
+
+  _onTopRightPointerover() {
+    window.draw.css({ cursor: 'nesw-resize' })
+    this.hoveredTarget = 'topRight'
+  }
+
+  _onTopRightPointerout() {
+    window.draw.css({ cursor: 'initial' })
+    this.hoveredTarget = null
+  }
+
+  _onBottomLeftPointerover() {
+    window.draw.css({ cursor: 'nesw-resize' })
+    this.hoveredTarget = 'bottomLeft'
+  }
+
+  _onBottomLeftPointerout() {
+    window.draw.css({ cursor: 'initial' })
+    this.hoveredTarget = null
+  }
+
+  _onBottomRightPointerover() {
+    window.draw.css({ cursor: 'nwse-resize' })
+    this.hoveredTarget = 'bottomRight'
+  }
+
+  _onBottomRightPointerout() {
+    window.draw.css({ cursor: 'initial' })
+    this.hoveredTarget = null
+  }
+
+  _onFillPointerover() {
+    window.draw.css({ cursor: 'grab' })
+    this.hoveredTarget = 'fill'
+  }
+
+  _onFillPointerout() {
+    window.draw.css({ cursor: 'initial' })
+    this.hoveredTarget = null
+  }
+
+  _onPointerdown(e) {
+    const { clientX, clientY } = e
+
+    switch(this.hoveredTarget) {
+      case 'fill':
+        this.boxObj.changeState(BoxState.MOVING, { x: clientX, y: clientY })
+        break;
+      case 'topLeft':
+        this.boxObj.changeState(BoxState.RESIZING, { control: 'topLeft', x: clientX, y: clientY })
+        break;
+      case 'top':
+        this.boxObj.changeState(BoxState.RESIZING, { control: 'top', y: clientY })
+        break;
+      case 'topRight':
+        this.boxObj.changeState(BoxState.RESIZING, { control: 'topRight', x: clientX, y: clientY })
+        break;
+      case 'right':
+        this.boxObj.changeState(BoxState.RESIZING, { control: 'right', x: clientX })
+        break;
+      case 'bottomRight':
+        this.boxObj.changeState(BoxState.RESIZING, { control: 'bottomRight', x: clientX, y: clientY })
+        break;
+      case 'bottom':
+        this.boxObj.changeState(BoxState.RESIZING, { control: 'bottom', y: clientY })
+        break;
+      case 'bottomLeft':
+        this.boxObj.changeState(BoxState.RESIZING, { control: 'bottomLeft', x: clientX, y: clientY })
+        break;
+      case 'left':
+        this.boxObj.changeState(BoxState.RESIZING, { control: 'left', x: clientX })
+        break;
+      default:
+        this.boxObj.changeState(BoxState.IDLE)
+    }
   }
 }
