@@ -53,39 +53,62 @@ export class SelectedState {
     this.controls['fill'].on('pointerover', this.onFillPointerover)
     this.controls['fill'].on('pointerout', this.onFillPointerout)
 
-    this.controls['shape'] = this.draw
+    this.controls['shape_visual'] = this.draw
       .rect(width, height)
       .move(x, y)
       .stroke({ width: 1.5, color: '#3d85c6' })
       .fill('none')
+    this.controls['shape'] = this.draw
+      .rect(width, height)
+      .move(x, y)
+      .stroke({ width: 10, color: '#000000' })
+      .fill('none')
+      .opacity(0)
     this.controls['shape'].on('pointerover', this.onShapePointerover)
     this.controls['shape'].on('pointerout', this.onShapePointerout)
 
-    this.controls['topLeft'] = this.draw
+    this.controls['topLeft_visual'] = this.draw
       .rect(8, 8)
       .center(x, y)
       .stroke({ width: 1.5, color: '#3d85c6' })
+    this.controls['topLeft'] = this.draw
+      .rect(12, 12)
+      .center(x, y)
+      .opacity(0)
     this.controls['topLeft'].on('pointerover', this.onTopLeftPointerover)
     this.controls['topLeft'].on('pointerout', this.onTopLeftPointerout)
 
-    this.controls['topRight'] = this.draw
+
+    this.controls['topRight_visual'] = this.draw
       .rect(8, 8)
       .center(x + width, y)
       .stroke({ width: 1.5, color: '#3d85c6' })
+    this.controls['topRight'] = this.draw
+      .rect(12, 12)
+      .center(x + width, y)
+      .opacity(0)
     this.controls['topRight'].on('pointerover', this.onTopRightPointerover)
     this.controls['topRight'].on('pointerout', this.onTopRightPointerout)
 
-    this.controls['bottomLeft'] = this.draw
+    this.controls['bottomLeft_visual'] = this.draw
       .rect(8, 8)
       .center(x, y + height)
       .stroke({ width: 1.5, color: '#3d85c6' })
+    this.controls['bottomLeft'] = this.draw
+      .rect(12, 12)
+      .center(x, y + height)
+      .opacity(0)
     this.controls['bottomLeft'].on('pointerover', this.onBottomLeftPointerover)
     this.controls['bottomLeft'].on('pointerout', this.onBottomLeftPointerout)
 
-    this.controls['bottomRight'] = this.draw
+    this.controls['bottomRight_visual'] = this.draw
       .rect(8, 8)
       .center(x + width, y + height)
       .stroke({ width: 1.5, color: '#3d85c6' })
+    this.controls['bottomRight'] = this.draw
+      .rect(12, 12)
+      .center(x + width, y + height)
+      .opacity(0)
     this.controls['bottomRight'].on('pointerover', this.onBottomRightPointerover)
     this.controls['bottomRight'].on('pointerout', this.onBottomRightPointerout)
   }
@@ -102,19 +125,21 @@ export class SelectedState {
 
   _onShapePointerover(e) {
     const { clientX, clientY } = e
-    if (clientX > this.svg.x() && clientX < this.svg.x() + this.svg.width()) {
-      window.draw.css({ cursor: 'ns-resize' })
-      if (clientY < this.svg.y() + this.svg.height()) {
-        this.hoveredTarget = 'top'
-      } else {
-        this.hoveredTarget = 'bottom'
-      }
-    } else if (clientY > this.svg.y() && clientY < this.svg.y() + this.svg.height()) {
+    const offset = 5
+
+    if (clientY > this.svg.y() + offset && clientY < this.svg.y() + this.svg.height() - offset) {
       window.draw.css({ cursor: 'ew-resize' })
-      if (clientX < this.svg.x() + this.svg.width()) {
+      if (clientX < this.svg.x() + this.svg.width() / 2) {
         this.hoveredTarget = 'left'
       } else {
         this.hoveredTarget = 'right'
+      }
+    } else if (clientX > this.svg.x() + offset && clientX < this.svg.x() + this.svg.width() - offset) {
+      window.draw.css({ cursor: 'ns-resize' })
+      if (clientY < this.svg.y() + this.svg.height() / 2) {
+        this.hoveredTarget = 'top'
+      } else {
+        this.hoveredTarget = 'bottom'
       }
     }
   }
