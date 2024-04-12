@@ -5,8 +5,8 @@ export class ResizingState {
   constructor(svg, boxObj) {
     this.svg = svg
     this.boxObj = boxObj
+    this.control = null
 
-    this.isMoving = false
     this.startPoint = {
       x: -1,
       y: -1,
@@ -22,28 +22,22 @@ export class ResizingState {
   }
 
   setup(params) {
-    console.log('enter SELECTED')
-    this.svg.stroke({ color: '#fff' })
-    window.draw.css({ cursor: 'grab' })
+    this.initializePositions(params)
 
-    this.onPointerdownCallback = this._onPointerdown.bind(this)
     this.onPointermoveCallback = this._onPointermove.bind(this)
     this.onPointerupCallback = this._onPointerup.bind(this)
-    this.onClickOutsideCallback = this._onClickOutside.bind(this)
-    this.onPointeroverCallback = this._onPointerover.bind(this)
-    this.onPointeroutCallback = this._onPointerout.bind(this)
-    this.svg.on('pointerdown', this.onPointerdownCallback)
+
     document.addEventListener('pointermove', this.onPointermoveCallback)
     document.addEventListener('pointerup', this.onPointerupCallback)
-    document.addEventListener('pointerdown', this.onClickOutsideCallback)
-    this.svg.on('pointerover', this.onPointeroverCallback)
-    this.svg.on('pointerout', this.onPointeroutCallback)
 
     const { x, y } = params.initialPoint
-    this.isMoving = true
     this.originalPoint = {
       x: this.svg.x(),
       y: this.svg.y(),
+    }
+    this.originalSize = {
+      width: this.svg.width(),
+      height: this.svg.height(),
     }
     this.startPoint.x = x
     this.startPoint.y = y
@@ -52,60 +46,94 @@ export class ResizingState {
   }
 
   teardown() {
-    window.draw.css({ cursor: 'initial' })
-
-    this.svg.off('pointerdown', this.onPointerdownCallback)
-    document.a
     document.removeEventListener('pointermove', this.onPointermoveCallback)
     document.removeEventListener('pointerup', this.onPointerupCallback)
-    document.removeEventListener('pointerdown', this.onClickOutsideCallback)
-    this.svg.off('pointerover', this.onPointeroverCallback)
-    this.svg.off('pointerout', this.onPointeroutCallback)
   }
 
-  _onPointerdown(e) {
-    e.stopPropagation()
-    this.isMoving = true
+  initializePositions(params) {
+    const { x, y, control } = params
 
+    this.control = control
     this.originalPoint = {
       x: this.svg.x(),
       y: this.svg.y(),
     }
-    const { clientX, clientY } = e
-    this.startPoint.x = clientX
-    this.startPoint.y = clientY
-    this.currentPoint.x = clientX
-    this.currentPoint.y = clientY
+    this.originalSize = {
+      width: this.svg.width(),
+      height: this.svg.height(),
+    }
+    this.startPoint = {
+      x: x,
+      y: y,
+    }
+    this.currentPoint = {
+      x: x,
+      y: y,
+    }
   }
 
   _onPointermove(e) {
     const { clientX, clientY } = e
 
-    if (this.isMoving) {
-      this.currentPoint.x = clientX
-      this.currentPoint.y = clientY
+    this.currentPoint.x = clientX
+    this.currentPoint.y = clientY
 
-      this.svg.attr({
-        x: this.originalPoint.x + this.currentPoint.x - this.startPoint.x,
-        y: this.originalPoint.y + this.currentPoint.y - this.startPoint.y,
-      })
+    switch(this.control) {
+      case 'topLeft':
+        this.svg.attr({
+          x: this.originalPoint.x - (this.startPoint.x - this.currentPoint.x),
+          y: this.originalPoint.y - (this.startPoint.y - this.currentPoint.y),
+          width: this.originalSize.width + (this.startPoint.x - this.currentPoint.x),
+          height: this.originalSize.height + (this.startPoint.y - this.currentPoint.y)
+        })
+        break
+      case 'top':
+        this.svg.attr({
+          y: this.originalPoint.y - (this.startPoint.y - this.currentPoint.y),
+          height: this.originalSize.height + (this.startPoint.y - this.currentPoint.y)
+        })
+        break
+      case 'topRight':
+        this.svg.attr({
+
+          y: this.originalPoint.y + (this.currentPoint.y - this.startPoint.y),
+          width: this.originalSize.width + (this.currentPoint.x - this.startPoint.x),
+          height: this.originalSize.height + (this.startPoint.y - this.currentPoint.y)
+        })
+        break
+      case 'right':
+        this.svg.attr({
+          width: this.originalSize.width + (this.currentPoint.x - this.startPoint.x),
+        })
+        break
+      case 'bottomRight':
+        this.svg.attr({
+          width: this.originalSize.width + (this.currentPoint.x - this.startPoint.x),
+          height: this.originalSize.height + (this.currentPoint.y - this.startPoint.y)
+        })
+        break
+      case 'bottom':
+        this.svg.attr({
+          height: this.originalSize.height + (this.currentPoint.y - this.startPoint.y)
+        })
+        break
+      case 'bottomLeft':
+        this.svg.attr({
+          x: this.originalPoint.x - (this.startPoint.x - this.currentPoint.x),
+          width: this.originalSize.width + (this.startPoint.x - this.currentPoint.x),
+          height: this.originalSize.height + (this.currentPoint.y - this.startPoint.y)
+        })
+        break
+      case 'left':
+        this.svg.attr({
+          x: this.originalPoint.x + (this.currentPoint.x - this.startPoint.x),
+          width: this.originalSize.width + (this.startPoint.x - this.currentPoint.x),
+        })
+        break
     }
   }
 
   _onPointerup() {
-    this.isMoving = false
-    window.draw.css({ cursor: 'initial' })
-  }
-
-  _onClickOutside() {
-    this.boxObj.changeState(BoxState.IDLE)
-  }
-
-  _onPointerover() {
-    window.draw.css({ cursor: 'grab' })
-  }
-
-  _onPointerout() {
-    window.draw.css({ cursor: 'initial' })
+    this.boxObj.changeState(BoxState.SELECTED)
   }
 }
