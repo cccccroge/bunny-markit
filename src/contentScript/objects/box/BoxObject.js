@@ -1,11 +1,15 @@
 import { IdleState } from "./IdleState";
 import { HoveredState } from "./HoveredState";
 import { SelectedState } from "./SelectedState";
+import { MovingState } from "./MovingState";
+import { ResizingState } from "./ResizingState";
 
 export const BoxState = {
   IDLE: "idle",
   HOVERED: "hovered",
   SELECTED: "selected",
+  MOVING: "moving",
+  RESIZING: "resizing",
 }
 
 export class BoxObject {
@@ -18,6 +22,8 @@ export class BoxObject {
       [BoxState.IDLE]: new IdleState(svg, this),
       [BoxState.HOVERED]: new HoveredState(svg, this),
       [BoxState.SELECTED]: new SelectedState(svg, this),
+      [BoxState.MOVING]: new MovingState(svg, this),
+      [BoxState.RESIZING]: new ResizingState(svg, this),
     }
     this.state = null
     this.changeState(BoxState.IDLE)

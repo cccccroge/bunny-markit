@@ -1,4 +1,4 @@
-import { BoxObject } from "../objects/BoxObject"
+import { BoxObject } from "../objects/box/BoxObject"
 
 class BoxDrawer {
   constructor(draw, options) {
