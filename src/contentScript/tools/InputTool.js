@@ -17,7 +17,7 @@ class InputTool extends LitElement {
     this._switchToText();
   }
 
-  _onEditableBlur(_e) {
+  _onEditableBlur() {
     const event = new Event('blur', { bubles: true, composed: true });
     this.dispatchEvent(event);
   }

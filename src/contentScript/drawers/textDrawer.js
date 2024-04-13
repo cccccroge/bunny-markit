@@ -1,3 +1,5 @@
+import { TextObject } from "../objects/text/TextObject"
+
 class TextDrawer {
   constructor(draw, options) {
     this.draw = draw
@@ -6,7 +8,8 @@ class TextDrawer {
   }
 
   drawMark(position) {
-    return this._createText(position)
+    const svg = this._createText(position)
+    new TextObject(svg)
   }
 
   _initGoogleFonts() {
@@ -28,7 +31,7 @@ class TextDrawer {
   }
 
   _createText(position) {
-    const { 
+    const {
       defaultText,
       fontSize,
       fontFamily,
@@ -36,7 +39,7 @@ class TextDrawer {
 
     const leading = 1.5
     const lineHeightInPx = fontSize * leading
-  
+
     return this.draw
       .text(defaultText)
       .font({
