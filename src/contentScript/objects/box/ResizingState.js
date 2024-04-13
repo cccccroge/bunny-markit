@@ -1,6 +1,5 @@
 import { BoxState } from "./BoxObject"
 
-// TODO: havn't done antyhing yet.
 export class ResizingState {
   constructor(svg, boxObj) {
     this.svg = svg
