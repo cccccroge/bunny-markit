@@ -1,6 +1,5 @@
 import { BoxState } from "./BoxObject"
 
-// TODO: havn't done antyhing yet.
 export class ResizingState {
   constructor(svg, boxObj) {
     this.svg = svg
@@ -30,7 +29,7 @@ export class ResizingState {
     document.addEventListener('pointermove', this.onPointermoveCallback)
     document.addEventListener('pointerup', this.onPointerupCallback)
 
-    const { x, y } = params.initialPoint
+    const { x, y } = params
     this.originalPoint = {
       x: this.svg.x(),
       y: this.svg.y(),
