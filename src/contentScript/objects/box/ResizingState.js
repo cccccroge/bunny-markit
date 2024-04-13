@@ -30,7 +30,7 @@ export class ResizingState {
     document.addEventListener('pointermove', this.onPointermoveCallback)
     document.addEventListener('pointerup', this.onPointerupCallback)
 
-    const { x, y } = params.initialPoint
+    const { x, y } = params
     this.originalPoint = {
       x: this.svg.x(),
       y: this.svg.y(),

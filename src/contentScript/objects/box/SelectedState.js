@@ -22,7 +22,6 @@ export class SelectedState {
     this.onBottomRightPointerout = this._onBottomRightPointerout.bind(this)
     this.onFillPointerover = this._onFillPointerover.bind(this)
     this.onFillPointerout = this._onFillPointerout.bind(this)
-
   }
 
   setup() {

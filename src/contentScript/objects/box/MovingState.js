@@ -20,8 +20,6 @@ export class MovingState {
   }
 
   setup(params) {
-    console.log('enter SELECTED')
-
     this.initPositions(params)
     this.onPointermoveCallback = this._onPointermove.bind(this)
     this.onPointerupCallback = this._onPointerup.bind(this)

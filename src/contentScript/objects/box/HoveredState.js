@@ -6,20 +6,23 @@ export class HoveredState {
     this.boxObj = boxObj
   }
 
-  setup() {
+  setup(params) {
     this.svg.stroke({ color: '#e06666' })
+    this.hoveredRegion = params.hoveredRegion
+
     window.draw.css({ cursor: 'grab' })
 
     this.onPointeroutCallback = this._onPointerout.bind(this)
     this.onPointerdownCallback = this._onPointerdown.bind(this)
-    this.svg.on('pointerout', this.onPointeroutCallback)
-    this.svg.on('pointerdown', this.onPointerdownCallback)
+    this.hoveredRegion.on('pointerout', this.onPointeroutCallback)
+    this.hoveredRegion.on('pointerdown', this.onPointerdownCallback)
   }
 
   teardown() {
     window.draw.css({ cursor: 'initial' })
-    this.svg.off('pointerout', this.onPointeroutCallback)
-    this.svg.off('pointerdown', this.onPointerdownCallback)
+
+    this.hoveredRegion.off('pointerout', this.onPointeroutCallback)
+    this.hoveredRegion.off('pointerdown', this.onPointerdownCallback)
   }
 
   _onPointerout() {
