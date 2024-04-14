@@ -2,7 +2,7 @@ import { IdleState } from "./IdleState";
 import { HoveredState } from "./HoveredState";
 import { SelectedState } from "./SelectedState";
 import { MovingState } from "./MovingState";
-// import { ResizingState } from "./ResizingState";
+import { ResizingState } from "./ResizingState";
 // import { InputState } from "./InputState";
 
 export const TextState = {
@@ -26,7 +26,7 @@ export class TextObject {
       // [TextState.INPUT]: new InputState(svg, this),
       [TextState.SELECTED]: new SelectedState(svg, this),
       [TextState.MOVING]: new MovingState(svg, this),
-      // [TextState.RESIZING]: new ResizingState(svg, this),
+      [TextState.RESIZING]: new ResizingState(svg, this),
     }
     this.state = null
     this.changeState(TextState.IDLE)

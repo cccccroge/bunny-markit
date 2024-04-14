@@ -1,9 +1,9 @@
-import { BoxState } from "./BoxObject"
+import { TextState } from "./TextObject"
 
 export class ResizingState {
-  constructor(svg, boxObj) {
+  constructor(svg, textObj) {
     this.svg = svg
-    this.boxObj = boxObj
+    this.textObj = textObj
     this.control = null
 
     this.startPoint = {
@@ -15,8 +15,8 @@ export class ResizingState {
       y: -1,
     }
     this.originalPoint = {
-      x: svg.x(),
-      y: svg.y(),
+      x: svg.bbox().x,
+      y: svg.bbox().y,
     }
   }
 
@@ -40,12 +40,12 @@ export class ResizingState {
 
     this.control = control
     this.originalPoint = {
-      x: this.svg.x(),
-      y: this.svg.y(),
+      x: this.svg.bbox().x,
+      y: this.svg.bbox().y,
     }
     this.originalSize = {
-      width: this.svg.width(),
-      height: this.svg.height(),
+      width: this.svg.bbox().width,
+      height: this.svg.bbox().height,
     }
     this.startPoint = {
       x: x,
@@ -64,14 +64,22 @@ export class ResizingState {
     this.currentPoint.y = clientY
 
     switch(this.control) {
-      case 'topLeft':
-        this.svg.attr({
-          x: this.originalPoint.x - (this.startPoint.x - this.currentPoint.x),
-          y: this.originalPoint.y - (this.startPoint.y - this.currentPoint.y),
-          width: this.originalSize.width + (this.startPoint.x - this.currentPoint.x),
-          height: this.originalSize.height + (this.startPoint.y - this.currentPoint.y)
-        })
+      case 'topLeft': {
+        // this.svg.attr({
+        //   x: this.originalPoint.x - (this.startPoint.x - this.currentPoint.x),
+        //   y: this.originalPoint.y - (this.startPoint.y - this.currentPoint.y),
+        //   width: this.originalSize.width + (this.startPoint.x - this.currentPoint.x),
+        //   height: this.originalSize.height + (this.startPoint.y - this.currentPoint.y)
+        // })
+
+        const dx = this.startPoint.x - this.currentPoint.x
+        const dy = this.startPoint.y - this.currentPoint.y
+        const delta = Math.pow(dx * dx + dy * dy, 0.5)
+        console.log('factor: ', 1 + delta / this.originalSize.width)
+        this.svg.scale(1 + delta / this.originalSize.width)
+
         break
+      }
       case 'top':
         this.svg.attr({
           y: this.originalPoint.y - (this.startPoint.y - this.currentPoint.y),
@@ -118,6 +126,6 @@ export class ResizingState {
   }
 
   _onPointerup() {
-    this.boxObj.changeState(BoxState.SELECTED)
+    this.textObj.changeState(TextState.SELECTED)
   }
 }
