@@ -1,13 +1,14 @@
-import { BoxState } from "./BoxObject"
+import { TextState } from "./TextObject"
 
 export class HoveredState {
-  constructor(svg, boxObj) {
+  constructor(svg, textObj) {
     this.svg = svg
-    this.boxObj = boxObj
+    this.textObj = textObj
   }
 
   setup(params) {
-    this.svg.stroke({ color: '#e06666' })
+    console.log('become hovered')
+    this.svg.fill({ color: '#e06666' })
     this.hoveredRegion = params.hoveredRegion
 
     window.draw.css({ cursor: 'grab' })
@@ -26,21 +27,21 @@ export class HoveredState {
   }
 
   _onPointerout() {
-    this.boxObj.changeState(BoxState.IDLE)
+    this.textObj.changeState(TextState.IDLE)
   }
 
   _onPointerdown(e) {
     e.stopPropagation()
 
-    // TODO: this need to be done in state
+    // TODO: this need be done in state
     // notify toolbox
-    const boxSelectedEvent = new CustomEvent('box-selected', {
-      bubles: true,
-      composed: true,
-      detail: { svg: this.svg },
-    });
-    document.dispatchEvent(boxSelectedEvent)
+    // const boxSelectedEvent = new CustomEvent('box-selected', {
+    //   bubles: true,
+    //   composed: true,
+    //   detail: { svg: this.svg },
+    // });
+    // document.dispatchEvent(boxSelectedEvent)
 
-    this.boxObj.changeState(BoxState.SELECTED)
+    this.textObj.changeState(TextState.SELECTED)
   }
 }

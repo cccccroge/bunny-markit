@@ -10,7 +10,7 @@ class TextTool extends LitElement {
       defaultText: '<__default__>',
       fontSize: 24,
       fontFamily: "'Noto Sans', sans-serif",
-    })    
+    })
   }
 
   connectedCallback() {
@@ -33,15 +33,15 @@ class TextTool extends LitElement {
     event.stopImmediatePropagation()
     event.preventDefault()
     const { clientX, clientY } = event
-    const drawSvg = this.drawer.drawMark({ x: clientX, y: clientY })
+    this.drawer.drawMark({ x: clientX, y: clientY })
 
     // edit it (go input tool) directly after created
-    const textCreatedEvent = new CustomEvent('text-created', {
-      bubles: true,
-      composed: true,
-      detail: { textTarget: drawSvg.node.firstChild },
-    });
-    this.dispatchEvent(textCreatedEvent)    
+    // const textCreatedEvent = new CustomEvent('text-created', {
+    //   bubles: true,
+    //   composed: true,
+    //   detail: { textTarget: drawSvg.node.firstChild },
+    // });
+    // this.dispatchEvent(textCreatedEvent)
   }
 }
 

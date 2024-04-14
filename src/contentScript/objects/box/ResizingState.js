@@ -28,20 +28,6 @@ export class ResizingState {
 
     document.addEventListener('pointermove', this.onPointermoveCallback)
     document.addEventListener('pointerup', this.onPointerupCallback)
-
-    const { x, y } = params
-    this.originalPoint = {
-      x: this.svg.x(),
-      y: this.svg.y(),
-    }
-    this.originalSize = {
-      width: this.svg.width(),
-      height: this.svg.height(),
-    }
-    this.startPoint.x = x
-    this.startPoint.y = y
-    this.currentPoint.x = x
-    this.currentPoint.y = y
   }
 
   teardown() {
@@ -94,7 +80,6 @@ export class ResizingState {
         break
       case 'topRight':
         this.svg.attr({
-
           y: this.originalPoint.y + (this.currentPoint.y - this.startPoint.y),
           width: this.originalSize.width + (this.currentPoint.x - this.startPoint.x),
           height: this.originalSize.height + (this.startPoint.y - this.currentPoint.y)
