@@ -31,6 +31,7 @@ export class HoveredState {
 
   _onPointerdown(e) {
     e.stopPropagation()
+    const { clientX, clientY } = e
 
     // TODO: this need to be done in state
     // notify toolbox
@@ -41,6 +42,6 @@ export class HoveredState {
     });
     document.dispatchEvent(boxSelectedEvent)
 
-    this.boxObj.changeState(BoxState.SELECTED)
+    this.boxObj.changeState(BoxState.MOVING, { x: clientX, y: clientY })
   }
 }

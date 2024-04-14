@@ -9,7 +9,6 @@ export class IdleState {
 
   setup() {
     this.svg.fill({ color: '#f06' })
-    console.log('become idle')
 
     const { x, y, width, height } = this.svg.bbox()
 

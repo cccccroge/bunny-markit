@@ -7,7 +7,6 @@ export class HoveredState {
   }
 
   setup(params) {
-    console.log('become hovered')
     this.svg.fill({ color: '#e06666' })
     this.hoveredRegion = params.hoveredRegion
 
@@ -32,7 +31,7 @@ export class HoveredState {
 
   _onPointerdown(e) {
     e.stopPropagation()
-
+    const { clientX, clientY } = e
     // TODO: this need be done in state
     // notify toolbox
     // const boxSelectedEvent = new CustomEvent('box-selected', {
@@ -42,6 +41,6 @@ export class HoveredState {
     // });
     // document.dispatchEvent(boxSelectedEvent)
 
-    this.textObj.changeState(TextState.SELECTED)
+    this.textObj.changeState(TextState.MOVING, { x: clientX, y: clientY })
   }
 }
