@@ -50,6 +50,8 @@ export class MovingState {
   }
 
   _onPointermove(e) {
+    e.preventDefault()
+
     const { clientX, clientY } = e
 
     this.currentPosition.x = clientX
