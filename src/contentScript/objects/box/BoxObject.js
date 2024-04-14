@@ -10,6 +10,7 @@ export const BoxState = {
   SELECTED: "selected",
   MOVING: "moving",
   RESIZING: "resizing",
+  ZOMBIE: "zombie",
 }
 
 export class BoxObject {
@@ -24,6 +25,7 @@ export class BoxObject {
       [BoxState.SELECTED]: new SelectedState(svg, this),
       [BoxState.MOVING]: new MovingState(svg, this),
       [BoxState.RESIZING]: new ResizingState(svg, this),
+      [BoxState.ZOMBIE]: null,
     }
     this.state = null
     this.changeState(BoxState.IDLE)
@@ -34,6 +36,8 @@ export class BoxObject {
       this.states[this.state].teardown()
     }
     this.state = state
-    this.states[state].setup(params)
+    if (this.states[state]) {
+      this.states[state].setup(params)
+    }
   }
 }

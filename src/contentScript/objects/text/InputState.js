@@ -1,28 +1,30 @@
-import { LitElement } from 'lit';
-import { SVG } from '@svgdotjs/svg.js';
-import { customElement, property } from 'lit/decorators.js';
+import { TextState } from "./TextObject"
+import { SVG } from "@svgdotjs/svg.js"
 
-@customElement('input-tool')
-class InputTool extends LitElement {
-  @property()
-  tspan;
-
-  connectedCallback() {
-    super.connectedCallback();
-    this._switchToEditable();
+export class InputState {
+  constructor(svg, textObj) {
+    this.svg = svg
+    this.draw = window.draw
+    this.textObj = textObj
+    this.tspan = null
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this._switchToText();
+  setup(params) {
+    console.log('params: ', params)
+    this.tspan = params.tspan
+    this.switchToEditable()
   }
 
-  _onEditableBlur() {
-    const event = new Event('blur', { bubles: true, composed: true });
-    this.dispatchEvent(event);
+  teardown() {
+    this.switchToText();
+    this.tspan = null
   }
 
-  _switchToEditable() {
+  onEditableBlur() {
+    this.textObj.changeState(TextState.IDLE);
+  }
+
+  switchToEditable() {
     // construction
     const { x, y } = this.tspan.getBoundingClientRect();
     this.foreignContainer = document.createElementNS(
@@ -38,10 +40,12 @@ class InputTool extends LitElement {
     this.editable = document.createElement('div');
     this.editable.setAttribute('contenteditable', 'true');
     this.editable.innerHTML =
-      this.tspan.textContent === '<__default__>' ? '' : this.tspan.textContent; // initialized to empty will have hard time to adjust it's position, so make it some magic string
+      this.tspan.textContent === '<__default__' ? '' : this.tspan.textContent; // initialized to empty will have hard time to adjust it's position, so make it some magic string
     this.editable.style =
       "color: red; outline: none; font-size: 24px; font-family: 'Noto Sans', sans-serif; cursor: text;";
-    this.editable.addEventListener('blur', this._onEditableBlur.bind(this));
+    setTimeout(() => {
+      this.editable.addEventListener('blur', this.onEditableBlur.bind(this));
+    }, 0)
 
     // append editable & hide original
     this.foreignContainer.appendChild(this.editable);
@@ -59,7 +63,7 @@ class InputTool extends LitElement {
     selection.addRange(range);
   }
 
-  _switchToText() {
+  switchToText() {
     // set text content back
     const newText = this.editable.textContent;
     this.originalText.text(newText);
@@ -69,5 +73,3 @@ class InputTool extends LitElement {
     this.foreignContainer.remove();
   }
 }
-
-export default InputTool;

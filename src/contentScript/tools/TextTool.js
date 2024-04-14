@@ -34,14 +34,6 @@ class TextTool extends LitElement {
     event.preventDefault()
     const { clientX, clientY } = event
     this.drawer.drawMark({ x: clientX, y: clientY })
-
-    // edit it (go input tool) directly after created
-    // const textCreatedEvent = new CustomEvent('text-created', {
-    //   bubles: true,
-    //   composed: true,
-    //   detail: { textTarget: drawSvg.node.firstChild },
-    // });
-    // this.dispatchEvent(textCreatedEvent)
   }
 }
 

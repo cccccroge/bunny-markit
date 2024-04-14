@@ -3,7 +3,7 @@ import { HoveredState } from "./HoveredState";
 import { SelectedState } from "./SelectedState";
 import { MovingState } from "./MovingState";
 import { ResizingState } from "./ResizingState";
-// import { InputState } from "./InputState";
+import { InputState } from "./InputState";
 
 export const TextState = {
   IDLE: "idle",
@@ -12,6 +12,7 @@ export const TextState = {
   SELECTED: "selected",
   MOVING: "moving",
   RESIZING: "resizing",
+  ZOMBIE: "zombie",
 }
 
 export class TextObject {
@@ -23,10 +24,11 @@ export class TextObject {
     this.states = {
       [TextState.IDLE]: new IdleState(svg, this),
       [TextState.HOVERED]: new HoveredState(svg, this),
-      // [TextState.INPUT]: new InputState(svg, this),
+      [TextState.INPUT]: new InputState(svg, this),
       [TextState.SELECTED]: new SelectedState(svg, this),
       [TextState.MOVING]: new MovingState(svg, this),
       [TextState.RESIZING]: new ResizingState(svg, this),
+      [TextState.ZOMBIE]: null,
     }
     this.state = null
     this.changeState(TextState.IDLE)
@@ -37,6 +39,8 @@ export class TextObject {
       this.states[this.state].teardown()
     }
     this.state = state
-    this.states[state].setup(params)
+    if (this.states[state]) {
+      this.states[state].setup(params)
+    }
   }
 }
