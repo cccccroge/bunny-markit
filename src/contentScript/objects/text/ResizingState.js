@@ -59,6 +59,8 @@ export class ResizingState {
   }
 
   _onPointermove(e) {
+    e.preventDefault()
+
     const { clientX, clientY } = e
 
     this.currentPoint.x = clientX

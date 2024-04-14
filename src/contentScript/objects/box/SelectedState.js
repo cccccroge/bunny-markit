@@ -25,7 +25,7 @@ export class SelectedState {
   }
 
   setup() {
-    this.svg.stroke({ color: '#e06666' })
+    this.svg.stroke({ color: '#f06' })
     window.draw.css({ cursor: 'grab' })
     this.setupControls()
 

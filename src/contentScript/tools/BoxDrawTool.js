@@ -52,6 +52,8 @@ class BoxDrawTool extends LitElement {
   }
 
   _onPointerMoveCallback(event) {
+    event.preventDefault()
+
     if (!this.hasDragged) {
       return
     }
@@ -67,7 +69,7 @@ class BoxDrawTool extends LitElement {
     this.drawer.drawMarkFromTwoPoints(this.pointDragStart, this.pointCurrent)
   }
 
-  _onPointerUpCallback(_event) {
+  _onPointerUpCallback() {
     if (this.pointDragStart.x !== -1) {
       this.drawer.eraseMarkFromTwoPoints(this.pointDragStart, this.pointCurrent)
     }

@@ -20,7 +20,9 @@ export class MovingState {
   }
 
   setup(params) {
+    this.svg.fill({ color: '#f06' })
     this.initPositions(params)
+
     this.onPointermoveCallback = this._onPointermove.bind(this)
     this.onPointerupCallback = this._onPointerup.bind(this)
     document.addEventListener('pointermove', this.onPointermoveCallback)
@@ -48,6 +50,8 @@ export class MovingState {
   }
 
   _onPointermove(e) {
+    e.preventDefault()
+
     const { clientX, clientY } = e
 
     this.currentPosition.x = clientX
