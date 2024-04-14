@@ -22,6 +22,7 @@ export class SelectedState {
     this.onBottomRightPointerout = this._onBottomRightPointerout.bind(this)
     this.onFillPointerover = this._onFillPointerover.bind(this)
     this.onFillPointerout = this._onFillPointerout.bind(this)
+    this.onKeydownCallback = this._onKeydownCallback.bind(this)
   }
 
   setup() {
@@ -29,7 +30,13 @@ export class SelectedState {
     window.draw.css({ cursor: 'grab' })
     this.setupControls()
 
+    this.isDblclickTimeEnd = false
+    setTimeout(() => {
+      this.isDblclickTimeEnd = true
+    }, 300)
+
     document.addEventListener('pointerdown', this.onPointerdownCallback)
+    document.addEventListener('keydown', this.onKeydownCallback)
   }
 
   teardown() {
@@ -37,6 +44,7 @@ export class SelectedState {
     this.removeControls()
 
     document.removeEventListener('pointerdown', this.onPointerdownCallback)
+    document.removeEventListener('keydown', this.onKeydownCallback)
   }
 
   setupControls() {
@@ -197,6 +205,12 @@ export class SelectedState {
   }
 
   _onPointerdown(e) {
+    if (!this.isDblclickTimeEnd) {
+      this.textObj.changeState(TextState.INPUT, { tspan: this.svg.node.firstChild })
+      e.preventDefault()
+      return
+    }
+
     const { clientX, clientY } = e
 
     switch(this.hoveredTarget) {
@@ -229,6 +243,14 @@ export class SelectedState {
         break;
       default:
         this.textObj.changeState(TextState.IDLE)
+    }
+  }
+
+  _onKeydownCallback(event) {
+    if (event.key === 'Backspace') {
+      this.svg.remove()
+      // TODO: this will cause memory leak, and I think there are serverl leak in other places
+      this.textObj.changeState(TextState.ZOMBIE)
     }
   }
 }

@@ -32,16 +32,6 @@ export class HoveredState {
   _onPointerdown(e) {
     e.stopPropagation()
     const { clientX, clientY } = e
-
-    // TODO: this need to be done in state
-    // notify toolbox
-    const boxSelectedEvent = new CustomEvent('box-selected', {
-      bubles: true,
-      composed: true,
-      detail: { svg: this.svg },
-    });
-    document.dispatchEvent(boxSelectedEvent)
-
     this.boxObj.changeState(BoxState.MOVING, { x: clientX, y: clientY })
   }
 }

@@ -22,6 +22,7 @@ export class SelectedState {
     this.onBottomRightPointerout = this._onBottomRightPointerout.bind(this)
     this.onFillPointerover = this._onFillPointerover.bind(this)
     this.onFillPointerout = this._onFillPointerout.bind(this)
+    this.onKeydownCallback = this._onKeydownCallback.bind(this)
   }
 
   setup() {
@@ -30,6 +31,7 @@ export class SelectedState {
     this.setupControls()
 
     document.addEventListener('pointerdown', this.onPointerdownCallback)
+    document.addEventListener('keydown', this.onKeydownCallback)
   }
 
   teardown() {
@@ -37,6 +39,7 @@ export class SelectedState {
     this.removeControls()
 
     document.removeEventListener('pointerdown', this.onPointerdownCallback)
+    document.removeEventListener('keydown', this.onKeydownCallback)
   }
 
   setupControls() {
@@ -231,6 +234,14 @@ export class SelectedState {
         break;
       default:
         this.boxObj.changeState(BoxState.IDLE)
+    }
+  }
+
+  _onKeydownCallback(event) {
+    if (event.key === 'Backspace') {
+      this.svg.remove()
+      // TODO: this will cause memory leak, and I think there are serverl leak in other places
+      this.boxObj.changeState(BoxState.ZOMBIE)
     }
   }
 }
