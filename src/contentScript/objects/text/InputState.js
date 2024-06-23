@@ -10,7 +10,6 @@ export class InputState {
   }
 
   setup(params) {
-    console.log('params: ', params)
     this.tspan = params.tspan
     this.switchToEditable()
   }

@@ -7,7 +7,7 @@ class TextTool extends LitElement {
   constructor() {
     super()
     this.drawer = new TextDrawer(window.draw, {
-      defaultText: '<__default__>',
+      defaultText: '<text>', // it seems this will somehow render empty text, which is what we want
       fontSize: 24,
       fontFamily: "'Noto Sans', sans-serif",
     })

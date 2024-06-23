@@ -31,7 +31,7 @@ export class TextObject {
       [TextState.ZOMBIE]: null,
     }
     this.state = null
-    this.changeState(TextState.IDLE)
+    this.changeState(TextState.INPUT, { tspan: svg.node.firstChild })
   }
 
   changeState(state, params) {
