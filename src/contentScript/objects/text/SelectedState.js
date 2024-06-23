@@ -206,7 +206,10 @@ export class SelectedState {
 
   _onPointerdown(e) {
     if (!this.isDblclickTimeEnd) {
+      // TODO: fix multiple line editing
       this.textObj.changeState(TextState.INPUT, { tspan: this.svg.node.firstChild })
+      // correct content for multiple line wil be this.svg.text()
+      // but still need a tspan object to pass other meta data, too
       e.preventDefault()
       return
     }

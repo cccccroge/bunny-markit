@@ -34,13 +34,12 @@ export class InputState {
     this.foreignContainer.setAttribute('x', x);
     this.foreignContainer.setAttribute('y', y);
     // TODO: need to handle dimension in another way...
-    this.foreignContainer.setAttribute('width', 500);
-    this.foreignContainer.setAttribute('height', 100);
+    this.foreignContainer.setAttribute('width', '100%');
+    this.foreignContainer.setAttribute('height', '100%');
 
     this.editable = document.createElement('div');
     this.editable.setAttribute('contenteditable', 'true');
-    this.editable.innerHTML =
-      this.tspan.textContent === '<__default__' ? '' : this.tspan.textContent; // initialized to empty will have hard time to adjust it's position, so make it some magic string
+    this.editable.innerHTML = this.tspan.textContent;
     this.editable.style = `
       color: red;
       outline: none;
@@ -70,7 +69,7 @@ export class InputState {
 
   switchToText() {
     // set text content back
-    const newText = this.editable.textContent;
+    const newText = this.editable.innerText;
     this.originalText.text(newText);
 
     // show original & destroy editable
