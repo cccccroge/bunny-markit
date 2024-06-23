@@ -111,17 +111,6 @@ export class ToolBox extends LitElement {
             Text
           </sl-icon-button>
         </sl-tooltip>
-        <sl-tooltip content="Text(T)">
-          <sl-icon-button
-            name="type"
-            class="button${this.activatedTool === this.TOOL.NONE
-              ? ' selected'
-              : ''}"
-            @click="${this._onNoneClick}"
-          >
-            None
-          </sl-icon-button>
-        </sl-tooltip>
       </sl-button-group>
       ${this._getActivatedTool()}
     `;
