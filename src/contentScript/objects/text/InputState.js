@@ -26,6 +26,7 @@ export class InputState {
   switchToEditable() {
     // construction
     const { x, y } = this.tspan.getBoundingClientRect();
+    const fontSize = getComputedStyle(this.tspan).getPropertyValue('font-size');
     this.foreignContainer = document.createElementNS(
       'http://www.w3.org/2000/svg',
       'foreignObject'
@@ -40,8 +41,13 @@ export class InputState {
     this.editable.setAttribute('contenteditable', 'true');
     this.editable.innerHTML =
       this.tspan.textContent === '<__default__' ? '' : this.tspan.textContent; // initialized to empty will have hard time to adjust it's position, so make it some magic string
-    this.editable.style =
-      "color: red; outline: none; font-size: 24px; font-family: 'Noto Sans', sans-serif; cursor: text;";
+    this.editable.style = `
+      color: red;
+      outline: none;
+      font-size: ${fontSize};
+      font-family: 'Noto Sans', sans-serif;
+      cursor: text;
+    `;
     setTimeout(() => {
       this.editable.addEventListener('blur', this.onEditableBlur.bind(this));
     }, 0)
