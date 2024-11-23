@@ -1,12 +1,13 @@
-import { LitElement, html, css } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { createRef, ref } from "lit/directives/ref.js"
-import './tools/BoxSnapTool'
-import './tools/BoxDrawTool'
-import './tools/TextTool'
-import './tools/EditTool'
-import '@shoelace-style/shoelace/dist/components/button-group/button-group.js'
-import '@shoelace-style/shoelace/dist/components/tab/tab.js'
+import { LitElement, html, css } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
+import { createRef, ref } from 'lit/directives/ref.js';
+import './tools/BoxSnapTool';
+import './tools/BoxDrawTool';
+import './tools/TextTool';
+import './tools/EditTool';
+import './tools/ArrowTool';
+import '@shoelace-style/shoelace/dist/components/button-group/button-group.js';
+import '@shoelace-style/shoelace/dist/components/tab/tab.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
@@ -47,7 +48,7 @@ export class ToolBox extends LitElement {
   `;
 
   constructor() {
-    super()
+    super();
   }
 
   TOOL = {
@@ -56,13 +57,14 @@ export class ToolBox extends LitElement {
     BOX_SNAP: 'box-snap',
     BOX_DRAW: 'box-draw',
     TEXT: 'text',
-  }
+    ARROW: 'arrow',
+  };
 
-  editRef = createRef()
+  editRef = createRef();
 
   @state()
-  activatedTool = this.TOOL.NONE
-  boxLastSelected = this.TOOL.BOX_SNAP
+  activatedTool = this.TOOL.NONE;
+  boxLastSelected = this.TOOL.BOX_SNAP;
 
   render() {
     return html`
@@ -84,7 +86,8 @@ export class ToolBox extends LitElement {
               name="${this._getBoxIconName()}"
               slot="trigger"
               caret
-              class="button${this.activatedTool === this.TOOL.BOX_SNAP || this.activatedTool === this.TOOL.BOX_DRAW
+              class="button${this.activatedTool === this.TOOL.BOX_SNAP ||
+              this.activatedTool === this.TOOL.BOX_DRAW
                 ? ' selected'
                 : ''}"
             >
@@ -92,11 +95,11 @@ export class ToolBox extends LitElement {
             </sl-icon-button>
             <sl-menu class="dropdown-menu">
               <sl-menu-item @click="${this._onBoxSnapClick}"
-                >Snap<sl-icon slot="prefix" name="card-text"></sl-icon></sl-menu-item
-              >
+                >Snap<sl-icon slot="prefix" name="card-text"></sl-icon
+              ></sl-menu-item>
               <sl-menu-item @click="${this._onBoxDrawClick}"
-                >Draw<sl-icon slot="prefix" name="app"></sl-icon></sl-menu-item
-              >
+                >Draw<sl-icon slot="prefix" name="app"></sl-icon
+              ></sl-menu-item>
             </sl-menu>
           </sl-dropdown>
         </sl-tooltip>
@@ -111,13 +114,13 @@ export class ToolBox extends LitElement {
             Text
           </sl-icon-button>
         </sl-tooltip>
-        <sl-tooltip content="Text(T)">
+        <sl-tooltip content="Arrow(A)">
           <sl-icon-button
-            name="type"
-            class="button${this.activatedTool === this.TOOL.NONE
+            name="arrow-up-left"
+            class="button${this.activatedTool === this.TOOL.ARROW
               ? ' selected'
               : ''}"
-            @click="${this._onNoneClick}"
+            @click="${this._onArrowClick}"
           >
             None
           </sl-icon-button>
@@ -128,27 +131,21 @@ export class ToolBox extends LitElement {
   }
 
   _getActivatedTool() {
-    switch(this.activatedTool) {
+    switch (this.activatedTool) {
       case this.TOOL.EDIT:
-        return html `
-          <edit-tool ${ref(this.editRef)}></edit-tool>
-        `
+        return html` <edit-tool ${ref(this.editRef)}></edit-tool> `;
       case this.TOOL.BOX_SNAP:
-        return html `
-          <box-snap-tool></box-snap-tool>
-        `
+        return html` <box-snap-tool></box-snap-tool> `;
       case this.TOOL.BOX_DRAW:
-        return html `
-          <box-draw-tool></box-draw-tool>
-        `
+        return html` <box-draw-tool></box-draw-tool> `;
       case this.TOOL.TEXT:
-        return html `
-          <text-tool></text-tool>
-        `
+        return html` <text-tool></text-tool> `;
+      case this.TOOL.ARROW:
+        return html`<arrow-tool></arrow-tool>`;
       case this.TOOL.NONE:
-        return html ``
+        return html``;
       default:
-        throw new Error('Invalid tool: ', this.activatedTool)
+        throw new Error('Invalid tool: ', this.activatedTool);
     }
   }
 
@@ -156,34 +153,37 @@ export class ToolBox extends LitElement {
     const map = {
       [this.TOOL.BOX_SNAP]: 'card-text',
       [this.TOOL.BOX_DRAW]: 'app',
-    }
-    return map[this.activatedTool] || map[this.boxLastSelected]
+    };
+    return map[this.activatedTool] || map[this.boxLastSelected];
   }
 
   _onEditClick() {
-    this.activatedTool = this.TOOL.EDIT
+    this.activatedTool = this.TOOL.EDIT;
   }
 
   _onBoxSnapClick() {
-    this.activatedTool = this.TOOL.BOX_SNAP
-    this.boxLastSelected = this.TOOL.BOX_SNAP
+    this.activatedTool = this.TOOL.BOX_SNAP;
+    this.boxLastSelected = this.TOOL.BOX_SNAP;
   }
 
   _onBoxDrawClick() {
-    this.activatedTool = this.TOOL.BOX_DRAW
-    this.boxLastSelected = this.TOOL.BOX_DRAW
+    this.activatedTool = this.TOOL.BOX_DRAW;
+    this.boxLastSelected = this.TOOL.BOX_DRAW;
   }
 
   _onTextClick() {
-    this.activatedTool = this.TOOL.TEXT
+    this.activatedTool = this.TOOL.TEXT;
   }
 
+  _onArrowClick() {
+    this.activatedTool = this.TOOL.ARROW;
+  }
   _onNoneClick() {
-    this.activatedTool = this.TOOL.NONE
+    this.activatedTool = this.TOOL.NONE;
   }
 }
 
 export function showToolBox() {
-  const element = document.createElement('tool-box')
-  document.body.appendChild(element)
+  const element = document.createElement('tool-box');
+  document.body.appendChild(element);
 }
