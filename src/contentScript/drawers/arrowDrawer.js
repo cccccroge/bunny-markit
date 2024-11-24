@@ -7,6 +7,7 @@ class ArrowDrawer {
     this.last = {
       points: {},
       line: null,
+      head: null,
     };
   }
 
@@ -27,11 +28,22 @@ class ArrowDrawer {
       this.last.points.endPoint.y === endPoint.y
     ) {
       this.last.line.remove();
-      this.last.triangle.remove();
+      this.last.head.remove();
     }
   }
 
   _createShapes(points) {
+    const line = this._makeLine(points);
+    const head = this._makeHead(points);
+
+    this.last.line = line;
+    this.last.head = head;
+    this.last.points = points;
+
+    return { line, head };
+  }
+
+  _makeLine(points) {
     const { startPoint, endPoint } = points;
 
     const h = 20;
@@ -50,20 +62,12 @@ class ArrowDrawer {
       y: endPoint.y + (startPoint.y > endPoint.y ? 1 : -1) * (h / 2) * sinTheta,
     };
 
-    const line = this.draw
+    return this.draw
       .line(startPoint.x, startPoint.y, lineEnd.x, lineEnd.y)
       .stroke({ width: 5, color: '#f06' });
-
-    const triangle = this._makeTriangle(points);
-
-    this.last.line = line;
-    this.last.triangle = triangle;
-    this.last.points = { startPoint, endPoint };
-
-    return line;
   }
 
-  _makeTriangle(points) {
+  _makeHead(points) {
     const { startPoint, endPoint } = points;
     const h = 20;
     const w = 20;

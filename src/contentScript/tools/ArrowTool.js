@@ -60,11 +60,6 @@ class ArrowTool extends LitElement {
   }
 
   _onPointerUpCallback() {
-    if (this.pointDragStart.x !== -1) {
-      this.drawer.erase(this.pointDragStart, this.pointCurrent);
-    }
-    this.drawer.drawMark(this.pointDragStart, this.pointCurrent);
-
     this.hasDragged = false;
     this.pointDragStart = { x: -1, y: -1 };
     this.pointCurrent = { x: -1, y: -1 };
