@@ -1,4 +1,4 @@
-import TextDrawer from '../drawers/textDrawer';
+import ArrowDrawer from '../drawers/arrowDrawer';
 import { LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
@@ -6,34 +6,68 @@ import { customElement } from 'lit/decorators.js';
 class ArrowTool extends LitElement {
   constructor() {
     super();
-    this.drawer = new TextDrawer(window.draw, {
-      defaultText: '<__default__>',
-      fontSize: 24,
-      fontFamily: "'Noto Sans', sans-serif",
-    });
+    this.drawer = new ArrowDrawer(window.draw);
+
+    this.hasDragged = false;
+    this.pointDragStart = { x: -1, y: -1 };
+    this.pointCurrent = { x: -1, y: -1 };
   }
 
   connectedCallback() {
     super.connectedCallback();
-    if (document.body.style.cursor !== 'text') {
-      document.body.style.cursor = 'text';
-    }
-    this.onPointerDownCallback = this._onPointerDown.bind(this);
+
+    this.onPointerDownCallback = this._onPointerDownCallback.bind(this);
+    this.onPointerMoveCallback = this._onPointerMoveCallback.bind(this);
+    this.onPointerUpCallback = this._onPointerUpCallback.bind(this);
     document.addEventListener('pointerdown', this.onPointerDownCallback);
+    document.addEventListener('pointermove', this.onPointerMoveCallback);
+    document.addEventListener('pointerup', this.onPointerUpCallback);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    document.body.style.cursor = '';
+
     document.removeEventListener('pointerdown', this.onPointerDownCallback);
+    document.removeEventListener('pointermove', this.onPointerMoveCallback);
+    document.removeEventListener('pointerup', this.onPointerUpCallback);
   }
 
-  // callback of adding text to the drawer layer
-  _onPointerDown(event) {
-    event.stopImmediatePropagation();
-    event.preventDefault();
+  _onPointerDownCallback(event) {
+    this.hasDragged = true;
     const { clientX, clientY } = event;
-    this.drawer.drawMark({ x: clientX, y: clientY });
+    this.pointDragStart.x = clientX;
+    this.pointDragStart.y = clientY;
+    this.pointCurrent.x = clientX;
+    this.pointCurrent.y = clientY;
+  }
+
+  _onPointerMoveCallback(event) {
+    event.preventDefault();
+
+    if (!this.hasDragged) {
+      return;
+    }
+
+    if (this.pointDragStart.x !== -1) {
+      this.drawer.erase(this.pointDragStart, this.pointCurrent);
+    }
+
+    const { clientX, clientY } = event;
+    this.pointCurrent.x = clientX;
+    this.pointCurrent.y = clientY;
+
+    this.drawer.drawMark(this.pointDragStart, this.pointCurrent);
+  }
+
+  _onPointerUpCallback() {
+    if (this.pointDragStart.x !== -1) {
+      this.drawer.erase(this.pointDragStart, this.pointCurrent);
+    }
+    this.drawer.drawMark(this.pointDragStart, this.pointCurrent);
+
+    this.hasDragged = false;
+    this.pointDragStart = { x: -1, y: -1 };
+    this.pointCurrent = { x: -1, y: -1 };
   }
 }
 

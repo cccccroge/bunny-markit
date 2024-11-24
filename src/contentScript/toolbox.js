@@ -122,7 +122,7 @@ export class ToolBox extends LitElement {
               : ''}"
             @click="${this._onArrowClick}"
           >
-            None
+            Arrow
           </sl-icon-button>
         </sl-tooltip>
       </sl-button-group>
@@ -141,7 +141,7 @@ export class ToolBox extends LitElement {
       case this.TOOL.TEXT:
         return html` <text-tool></text-tool> `;
       case this.TOOL.ARROW:
-        return html`<arrow-tool></arrow-tool>`;
+        return html` <arrow-tool></arrow-tool> `;
       case this.TOOL.NONE:
         return html``;
       default:
