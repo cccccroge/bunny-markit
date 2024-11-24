@@ -27,20 +27,74 @@ class ArrowDrawer {
       this.last.points.endPoint.y === endPoint.y
     ) {
       this.last.line.remove();
+      this.last.triangle.remove();
     }
   }
 
   _createShapes(points) {
     const { startPoint, endPoint } = points;
 
+    const h = 20;
+    const d = Math.pow(
+      Math.pow(startPoint.x - endPoint.x, 2) +
+        Math.pow(startPoint.y - endPoint.y, 2),
+      1 / 2.0
+    );
+    const dY = Math.abs(startPoint.y - endPoint.y);
+    const dX = Math.abs(startPoint.x - endPoint.x);
+    const sinTheta = dY / d;
+    const cosTheta = dX / d;
+
+    const lineEnd = {
+      x: endPoint.x + (startPoint.x > endPoint.x ? 1 : -1) * (h / 2) * cosTheta,
+      y: endPoint.y + (startPoint.y > endPoint.y ? 1 : -1) * (h / 2) * sinTheta,
+    };
+
     const line = this.draw
-      .line(startPoint.x, startPoint.y, endPoint.x, endPoint.y)
+      .line(startPoint.x, startPoint.y, lineEnd.x, lineEnd.y)
       .stroke({ width: 5, color: '#f06' });
 
+    const triangle = this._makeTriangle(points);
+
     this.last.line = line;
+    this.last.triangle = triangle;
     this.last.points = { startPoint, endPoint };
 
     return line;
+  }
+
+  _makeTriangle(points) {
+    const { startPoint, endPoint } = points;
+    const h = 20;
+    const w = 20;
+
+    const d = Math.pow(
+      Math.pow(startPoint.x - endPoint.x, 2) +
+        Math.pow(startPoint.y - endPoint.y, 2),
+      1 / 2.0
+    );
+    const dY = Math.abs(startPoint.y - endPoint.y);
+    const dX = Math.abs(startPoint.x - endPoint.x);
+    const sinTheta = dY / d;
+    const cosTheta = dX / d;
+
+    const p1 = {
+      x: endPoint.x + (startPoint.x > endPoint.x ? 1 : -1) * h * cosTheta,
+      y: endPoint.y + (startPoint.y > endPoint.y ? 1 : -1) * h * sinTheta,
+    };
+    const p2 = {
+      x: p1.x + (startPoint.y > endPoint.y ? 1 : -1) * (w / 2) * sinTheta,
+      y: p1.y + (startPoint.x < endPoint.x ? 1 : -1) * (w / 2) * cosTheta,
+    };
+    const p3 = {
+      x: p1.x - (startPoint.y > endPoint.y ? 1 : -1) * (w / 2) * sinTheta,
+      y: p1.y - (startPoint.x < endPoint.x ? 1 : -1) * (w / 2) * cosTheta,
+    };
+
+    return this.draw
+      .polygon(`${endPoint.x},${endPoint.y} ${p2.x},${p2.y} ${p3.x},${p3.y}`)
+      .fill('#f06')
+      .stroke({ width: 1 });
   }
 }
 
