@@ -57,6 +57,7 @@ class ArrowDrawer {
     const sinTheta = dY / d;
     const cosTheta = dX / d;
 
+    // prevent the tail exceed the arrow head
     const lineEnd = {
       x: endPoint.x + (startPoint.x > endPoint.x ? 1 : -1) * (h / 2) * cosTheta,
       y: endPoint.y + (startPoint.y > endPoint.y ? 1 : -1) * (h / 2) * sinTheta,
@@ -69,6 +70,8 @@ class ArrowDrawer {
 
   _makeHead(points) {
     const { startPoint, endPoint } = points;
+
+    // the height, width of the head triangle
     const h = 20;
     const w = 20;
 
