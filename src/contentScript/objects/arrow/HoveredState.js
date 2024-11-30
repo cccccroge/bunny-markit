@@ -35,6 +35,6 @@ export class HoveredState {
   _onPointerdown(e) {
     e.stopPropagation();
     const { clientX, clientY } = e;
-    this.boxObj.changeState(ArrowState.MOVING, { x: clientX, y: clientY });
+    this.arrowObj.changeState(ArrowState.MOVING, { x: clientX, y: clientY });
   }
 }

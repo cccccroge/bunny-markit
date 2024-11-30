@@ -1,5 +1,6 @@
 import { IdleState } from './IdleState';
 import { HoveredState } from './HoveredState';
+import { MovingState } from './MovingState';
 
 export const ArrowState = {
   IDLE: 'idle',
@@ -19,7 +20,7 @@ export class ArrowObject {
       [ArrowState.IDLE]: new IdleState(svgs, this),
       [ArrowState.HOVERED]: new HoveredState(svgs, this),
       // [ArrowState.SELECTED]: new SelectedState(svgs, this),
-      // [ArrowState.MOVING]: new MovingState(svgs, this),
+      [ArrowState.MOVING]: new MovingState(svgs, this),
       // [ArrowState.MOVING_POINT]: new MovingPointState(svgs, this),
     };
     this.state = null;
