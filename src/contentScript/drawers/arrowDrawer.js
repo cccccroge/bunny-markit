@@ -1,4 +1,4 @@
-// import { BoxObject } from "../objects/box/BoxObject"
+import { ArrowObject } from '../objects/arrow/ArrowObject';
 
 class ArrowDrawer {
   constructor(draw, options) {
@@ -11,9 +11,12 @@ class ArrowDrawer {
     };
   }
 
-  drawMark(startPoint, endPoint) {
-    this._createShapes({ startPoint, endPoint });
-    // new BoxObject(rect)
+  drawMark(startPoint, endPoint, isConfirmed = false) {
+    const svgs = this._createShapes({ startPoint, endPoint });
+
+    if (isConfirmed) {
+      new ArrowObject(svgs);
+    }
   }
 
   erase(startPoint, endPoint) {
