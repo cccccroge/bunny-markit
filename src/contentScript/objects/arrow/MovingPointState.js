@@ -1,10 +1,11 @@
 import { ArrowState } from './ArrowObject';
-import { calculateAngle } from '../../utils/math';
+import ArrowDrawer from '../../drawers/arrowDrawer';
 
 export class MovingPointState {
   constructor(svgs, arrowObj) {
     this.svgs = svgs;
     this.arrowObj = arrowObj;
+    this.arrowDrawer = new ArrowDrawer(window.draw);
 
     this.dragStartPosition = {
       x: -1,
@@ -14,20 +15,21 @@ export class MovingPointState {
       x: -1,
       y: -1,
     };
-    this.initialPointPosition = {
+    this.startPointPosition = {
       x: -1,
       y: -1,
     };
-    this.initialTopLeftPointOfTheHead = {
+    this.endPointPosition = {
       x: -1,
       y: -1,
     };
   }
 
   setup(params) {
-    this.svgs.line.stroke({ color: '#f06' });
-    this.svgs.head.fill('#f06');
-    this.type = params.control;
+    // this.svgs.line.stroke({ color: '#f06' });
+    // this.svgs.head.fill('#f06');
+
+    this.control = params.control;
     this.initPositions(params);
 
     this.onPointermoveCallback = this._onPointermove.bind(this);
@@ -38,25 +40,20 @@ export class MovingPointState {
 
   initPositions(params) {
     const { x, y } = params;
-    if (this.type === 'start') {
-      this.initialPointPosition = {
-        x: this.svgs.line.array()[0][0],
-        y: this.svgs.line.array()[0][1],
-      };
-    } else if (this.type === 'end') {
-      this.initialPointPosition = {
-        x: this.svgs.line.array()[1][0],
-        y: this.svgs.line.array()[1][1],
-      };
-    }
-    this.initialTopLeftPointOfTheHead = {
-      x: this.svgs.head.array()[2][0],
-      y: this.svgs.head.array()[0][1],
-    };
+
     this.dragStartPosition.x = x;
     this.dragStartPosition.y = y;
     this.currentPosition.x = x;
     this.currentPosition.y = y;
+
+    this.startPointPosition = {
+      x: this.svgs.line.array()[0][0],
+      y: this.svgs.line.array()[0][1],
+    };
+    this.endPointPosition = {
+      x: this.svgs.line.array()[1][0],
+      y: this.svgs.line.array()[1][1],
+    };
   }
 
   teardown() {
@@ -77,45 +74,33 @@ export class MovingPointState {
     const dx = this.currentPosition.x - this.dragStartPosition.x;
     const dy = this.currentPosition.y - this.dragStartPosition.y;
 
-    if (this.type === 'start') {
-      this.svgs.line.attr({
-        x1: this.initialPointPosition.x + dx,
-        y1: this.initialPointPosition.y + dy,
-      });
-    } else if (this.type === 'end') {
-      // handling line
-      this.svgs.line.attr({
-        x2: this.initialPointPosition.x + dx,
-        y2: this.initialPointPosition.y + dy,
-      });
-
-      const headTransformOriginX =
-        (this.svgs.head.array()[1][0] + this.svgs.head.array()[2][0]) / 2;
-      const headTransformOriginY =
-        (this.svgs.head.array()[1][1] + this.svgs.head.array()[2][1]) / 2;
-
-      // handling head: position
-      // since `move` is targeting the top left point of the head polygons
-      // we will calculate the ending "top left" point
-      this.svgs.head.move(
-        this.initialTopLeftPointOfTheHead.x + dx,
-        this.initialTopLeftPointOfTheHead.y + dy
-      );
-
-      // handling head: rotation
-      const initialAngle = calculateAngle(
-        this.initialPointPosition.x - this.svgs.line.array()[0][0],
-        this.initialPointPosition.y - this.svgs.line.array()[0][1]
-      );
-      const currentAngle = calculateAngle(
-        this.currentPosition.x - this.svgs.line.array()[0][0],
-        this.currentPosition.y - this.svgs.line.array()[0][1]
-      );
-      this.svgs.head.transform({
-        rotate: initialAngle - currentAngle,
-        origin: [headTransformOriginX, headTransformOriginY],
-      });
+    // re-calculate the start point or end point coords
+    let newStartPointPosition = {
+      x: this.startPointPosition.x,
+      y: this.startPointPosition.y,
+    };
+    let newEndPointPosition = {
+      x: this.endPointPosition.x,
+      y: this.endPointPosition.y,
+    };
+    if (this.control === 'start') {
+      newStartPointPosition.x += dx;
+      newStartPointPosition.y += dy;
+    } else if (this.control === 'end') {
+      newEndPointPosition.x += dx;
+      newEndPointPosition.y += dy;
     }
+
+    // re-draw the arrow
+    this.svgs.line.remove();
+    this.svgs.head.remove();
+
+    const { line, head } = this.arrowDrawer._createShapes({
+      startPoint: newStartPointPosition,
+      endPoint: newEndPointPosition,
+    });
+    this.svgs.line = line;
+    this.svgs.head = head;
   }
 
   _onPointerup() {

@@ -15,7 +15,7 @@ class ArrowDrawer {
     const svgs = this._createShapes({ startPoint, endPoint });
 
     if (isConfirmed) {
-      new ArrowObject(svgs);
+      return new ArrowObject(svgs);
     }
   }
 
