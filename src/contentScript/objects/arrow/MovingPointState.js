@@ -1,4 +1,5 @@
 import { ArrowState } from './ArrowObject';
+import { calculateAngle } from '../../utils/math';
 
 export class MovingPointState {
   constructor(svgs, arrowObj) {
@@ -17,7 +18,7 @@ export class MovingPointState {
       x: -1,
       y: -1,
     };
-    this.initialHeadPosition = {
+    this.initialTopLeftPointOfTheHead = {
       x: -1,
       y: -1,
     };
@@ -48,9 +49,9 @@ export class MovingPointState {
         y: this.svgs.line.array()[1][1],
       };
     }
-    this.initialHeadPosition = {
-      x: this.svgs.head.x(),
-      y: this.svgs.head.y(),
+    this.initialTopLeftPointOfTheHead = {
+      x: this.svgs.head.array()[2][0],
+      y: this.svgs.head.array()[0][1],
     };
     this.dragStartPosition.x = x;
     this.dragStartPosition.y = y;
@@ -82,14 +83,38 @@ export class MovingPointState {
         y1: this.initialPointPosition.y + dy,
       });
     } else if (this.type === 'end') {
+      // handling line
       this.svgs.line.attr({
         x2: this.initialPointPosition.x + dx,
         y2: this.initialPointPosition.y + dy,
       });
+
+      const headTransformOriginX =
+        (this.svgs.head.array()[1][0] + this.svgs.head.array()[2][0]) / 2;
+      const headTransformOriginY =
+        (this.svgs.head.array()[1][1] + this.svgs.head.array()[2][1]) / 2;
+
+      // handling head: position
+      // since `move` is targeting the top left point of the head polygons
+      // we will calculate the ending "top left" point
       this.svgs.head.move(
-        this.initialHeadPosition.x + dx,
-        this.initialHeadPosition.y + dy
+        this.initialTopLeftPointOfTheHead.x + dx,
+        this.initialTopLeftPointOfTheHead.y + dy
       );
+
+      // handling head: rotation
+      const initialAngle = calculateAngle(
+        this.initialPointPosition.x - this.svgs.line.array()[0][0],
+        this.initialPointPosition.y - this.svgs.line.array()[0][1]
+      );
+      const currentAngle = calculateAngle(
+        this.currentPosition.x - this.svgs.line.array()[0][0],
+        this.currentPosition.y - this.svgs.line.array()[0][1]
+      );
+      this.svgs.head.transform({
+        rotate: initialAngle - currentAngle,
+        origin: [headTransformOriginX, headTransformOriginY],
+      });
     }
   }
 
