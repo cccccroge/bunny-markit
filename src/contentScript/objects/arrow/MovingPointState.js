@@ -51,8 +51,8 @@ export class MovingPointState {
       y: this.svgs.line.array()[0][1],
     };
     this.endPointPosition = {
-      x: this.svgs.line.array()[1][0],
-      y: this.svgs.line.array()[1][1],
+      x: this.svgs.head.array()[0][0], // head will be the actual end
+      y: this.svgs.head.array()[0][1],
     };
   }
 
