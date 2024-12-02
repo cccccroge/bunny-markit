@@ -8,7 +8,7 @@ class ArrowTool extends LitElement {
     super();
     this.drawer = new ArrowDrawer(window.draw);
 
-    this.hasDragged = false;
+    this.draggedState = 'none';
     this.pointDragStart = { x: -1, y: -1 };
     this.pointCurrent = { x: -1, y: -1 };
   }
@@ -33,7 +33,7 @@ class ArrowTool extends LitElement {
   }
 
   _onPointerDownCallback(event) {
-    this.hasDragged = true;
+    this.draggedState = 'start';
     const { clientX, clientY } = event;
     this.pointDragStart.x = clientX;
     this.pointDragStart.y = clientY;
@@ -44,8 +44,10 @@ class ArrowTool extends LitElement {
   _onPointerMoveCallback(event) {
     event.preventDefault();
 
-    if (!this.hasDragged) {
+    if (this.draggedState === 'none') {
       return;
+    } else if (this.draggedState === 'start') {
+      this.draggedState = 'progress';
     }
 
     if (this.pointDragStart.x !== -1) {
@@ -59,8 +61,23 @@ class ArrowTool extends LitElement {
     this.drawer.drawMark(this.pointDragStart, this.pointCurrent);
   }
 
-  _onPointerUpCallback() {
-    this.hasDragged = false;
+  _onPointerUpCallback(event) {
+    if (this.draggedState === 'start') {
+      this.draggedState = 'none';
+      return;
+    }
+
+    if (this.pointDragStart.x !== -1) {
+      this.drawer.erase(this.pointDragStart, this.pointCurrent);
+    }
+
+    const { clientX, clientY } = event;
+    this.pointCurrent.x = clientX;
+    this.pointCurrent.y = clientY;
+
+    this.drawer.drawMark(this.pointDragStart, this.pointCurrent, true);
+
+    this.draggedState = 'none';
     this.pointDragStart = { x: -1, y: -1 };
     this.pointCurrent = { x: -1, y: -1 };
   }
