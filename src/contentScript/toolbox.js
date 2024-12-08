@@ -186,4 +186,7 @@ export class ToolBox extends LitElement {
 export function showToolBox() {
   const element = document.createElement('tool-box');
   document.body.appendChild(element);
+
+  // prevent dragging cause selection
+  document.body.style.userSelect = 'none';
 }
