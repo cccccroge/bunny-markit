@@ -1,84 +1,99 @@
-import { LitElement } from "lit"
-import { customElement } from "lit/decorators.js";
+import { LitElement } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import BoxDrawer from '../drawers/boxDrawer';
+import { toggleBackgroundInteractivity } from '../toolbox';
 
 @customElement('box-draw-tool')
 class BoxDrawTool extends LitElement {
   constructor() {
-    super()
+    super();
     this.drawer = new BoxDrawer(window.draw, {
       radiusThreshold: 40,
       radiusLarge: 10,
       radiusSmall: 5,
       offsetTowardsOutside: 5,
-    })
-    this.hasDragged = false
-    this.pointDragStart = { x: -1, y: -1 }
-    this.pointCurrent = { x: -1, y: -1 }
+    });
+    this.hasDragged = false;
+    this.pointDragStart = { x: -1, y: -1 };
+    this.pointCurrent = { x: -1, y: -1 };
   }
 
   connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
 
     if (document.body.style.cursor !== 'crosshair') {
-      document.body.style.cursor = 'crosshair'
+      document.body.style.cursor = 'crosshair';
     }
 
-    this.onPointerDownCallback = this._onPointerDownCallback.bind(this)
-    this.onPointerMoveCallback = this._onPointerMoveCallback.bind(this)
-    this.onPointerUpCallback = this._onPointerUpCallback.bind(this)
-    document.addEventListener("pointerdown", this.onPointerDownCallback)
-    document.addEventListener("pointermove", this.onPointerMoveCallback)
-    document.addEventListener("pointerup", this.onPointerUpCallback)
+    toggleBackgroundInteractivity(false);
+
+    this.onPointerDownCallback = this._onPointerDownCallback.bind(this);
+    this.onPointerMoveCallback = this._onPointerMoveCallback.bind(this);
+    this.onPointerUpCallback = this._onPointerUpCallback.bind(this);
+    document.addEventListener('pointerdown', this.onPointerDownCallback);
+    document.addEventListener('pointermove', this.onPointerMoveCallback);
+    document.addEventListener('pointerup', this.onPointerUpCallback);
   }
 
   disconnectedCallback() {
-    super.disconnectedCallback()
+    super.disconnectedCallback();
 
-    document.body.style.cursor = ''
+    document.body.style.cursor = '';
 
-    document.removeEventListener("pointerdown", this.onPointerDownCallback)
-    document.removeEventListener("pointermove", this.onPointerMoveCallback)
-    document.removeEventListener("pointerup", this.onPointerUpCallback)
+    toggleBackgroundInteractivity(true);
+
+    document.removeEventListener('pointerdown', this.onPointerDownCallback);
+    document.removeEventListener('pointermove', this.onPointerMoveCallback);
+    document.removeEventListener('pointerup', this.onPointerUpCallback);
   }
 
   _onPointerDownCallback(event) {
-    this.hasDragged = true
-    const { clientX, clientY } = event
-    this.pointDragStart.x = clientX
-    this.pointDragStart.y = clientY
-    this.pointCurrent.x = clientX
-    this.pointCurrent.y = clientY
+    this.hasDragged = true;
+    const { clientX, clientY } = event;
+    this.pointDragStart.x = clientX;
+    this.pointDragStart.y = clientY;
+    this.pointCurrent.x = clientX;
+    this.pointCurrent.y = clientY;
   }
 
   _onPointerMoveCallback(event) {
-    event.preventDefault()
+    event.preventDefault();
 
     if (!this.hasDragged) {
-      return
+      return;
     }
 
     if (this.pointDragStart.x !== -1) {
-      this.drawer.eraseMarkFromTwoPoints(this.pointDragStart, this.pointCurrent)
+      this.drawer.eraseMarkFromTwoPoints(
+        this.pointDragStart,
+        this.pointCurrent
+      );
     }
 
-    const { clientX, clientY } = event
-    this.pointCurrent.x = clientX
-    this.pointCurrent.y = clientY
+    const { clientX, clientY } = event;
+    this.pointCurrent.x = clientX;
+    this.pointCurrent.y = clientY;
 
-    this.drawer.drawMarkFromTwoPoints(this.pointDragStart, this.pointCurrent)
+    this.drawer.drawMarkFromTwoPoints(this.pointDragStart, this.pointCurrent);
   }
 
   _onPointerUpCallback() {
     if (this.pointDragStart.x !== -1) {
-      this.drawer.eraseMarkFromTwoPoints(this.pointDragStart, this.pointCurrent)
+      this.drawer.eraseMarkFromTwoPoints(
+        this.pointDragStart,
+        this.pointCurrent
+      );
     }
-    this.drawer.drawMarkFromTwoPoints(this.pointDragStart, this.pointCurrent, true)
+    this.drawer.drawMarkFromTwoPoints(
+      this.pointDragStart,
+      this.pointCurrent,
+      true
+    );
 
-    this.hasDragged = false
-    this.pointDragStart = { x: -1, y: -1 }
-    this.pointCurrent = { x: -1, y: -1 }
+    this.hasDragged = false;
+    this.pointDragStart = { x: -1, y: -1 };
+    this.pointCurrent = { x: -1, y: -1 };
   }
 }
 
-export default BoxDrawTool
+export default BoxDrawTool;

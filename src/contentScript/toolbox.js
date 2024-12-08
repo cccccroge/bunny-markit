@@ -183,10 +183,20 @@ export class ToolBox extends LitElement {
   }
 }
 
-export function showToolBox() {
+export function toolInitialization() {
   const element = document.createElement('tool-box');
   document.body.appendChild(element);
 
   // prevent dragging cause selection
   document.body.style.userSelect = 'none';
+}
+
+export function toggleBackgroundInteractivity(enabled) {
+  if (enabled) {
+    document.querySelector('html').style.pointerEvents = 'auto';
+  } else {
+    const element = document.querySelector('tool-box');
+    document.querySelector('html').style.pointerEvents = 'none';
+    element.style.pointerEvents = 'auto';
+  }
 }
