@@ -68,7 +68,12 @@ export class ToolBox extends LitElement {
 
   render() {
     return html`
-      <sl-button-group label="Alignment" class="tool-box-group">
+      <sl-button-group
+        label="Alignment"
+        class="tool-box-group"
+        @mouseover="${this._onToolboxHover}"
+        @mouseleave="${this._onToolboxLeave}"
+      >
         <sl-tooltip content="Edit(E)">
           <sl-icon-button
             name="pencil-square"
@@ -155,6 +160,18 @@ export class ToolBox extends LitElement {
       [this.TOOL.BOX_DRAW]: 'app',
     };
     return map[this.activatedTool] || map[this.boxLastSelected];
+  }
+
+  _onToolboxHover() {
+    this._previousActivatedTool = this.activatedTool;
+    this.activatedTool = this.TOOL.NONE;
+  }
+
+  _onToolboxLeave() {
+    if (this._previousActivatedTool) {
+      this.activatedTool = this._previousActivatedTool;
+      this._previousActivatedTool = undefined;
+    }
   }
 
   _onEditClick() {
